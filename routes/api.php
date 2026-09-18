@@ -28,7 +28,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware('auth:sanctum')->get('logout',[AuthController::class,'signOut'])->name('signOut');
     });
 
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('login.verify')->group(function () {
         Route::get('link/generate',[InvitationLinkController::class, 'generate'])->name('generate.link');
 
         Route::apiResource('project',ProjectController::class);

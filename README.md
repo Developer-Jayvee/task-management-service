@@ -140,7 +140,7 @@ DELETE /api/v1/project/{project}
 ```bash
 GET    /api/v1/ticket
 POST   /api/v1/ticket
-GET    /api/v1/ticket/{ticket}
+GET    /api/v1/ticket/{ticket}1
 PUT    /api/v1/ticket/{ticket}
 DELETE /api/v1/ticket/{ticket}
 PATCH  /api/v1/ticket-status/{ticket}

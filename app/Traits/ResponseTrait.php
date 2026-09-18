@@ -46,7 +46,7 @@ trait ResponseTrait
         return response()->json([
             'message' => $message ?? $exception->getMessage() ?? "Please try again later.",
             'status' => false,
-            'data' => $exception->getLine() 
-        ],$code);
+            'data' => null
+        ],$exception->getCode() > 400 ? $exception->getCode() : $code);
     }
 }
