@@ -20,20 +20,22 @@ Route::prefix('v1')->group(function () {
         ]);
     })->middleware('auth:sanctum');
 
-    Route::prefix('auth')->group(function() {
-        Route::post('login',[AuthController::class, 'signIn'])->name('signIn');
-        Route::post('register',[AuthController::class, 'signUp'])->name('signUp');
-        Route::get('link/verify',[InvitationLinkController::class,'verify'])->name('verify.link');
-
-        Route::middleware('auth:sanctum')->get('logout',[AuthController::class,'signOut'])->name('signOut');
-    });
-
-    Route::middleware('login.verify')->group(function () {
-        Route::get('link/generate',[InvitationLinkController::class, 'generate'])->name('generate.link');
-
-        Route::apiResource('project',ProjectController::class);
-        Route::apiResource('ticket',TicketController::class);
-        Route::patch('ticket-status/{ticket}',[TicketController::class, 'updateStatus']);
+    Route::middleware('throttle:60,1')->group( function () {
+        Route::prefix('auth')->group(function() {
+            Route::post('login',[AuthController::class, 'signIn'])->name('signIn');
+            Route::post('register',[AuthController::class, 'signUp'])->name('signUp');
+            Route::get('link/verify',[InvitationLinkController::class,'verify'])->name('verify.link');
+    
+            Route::middleware('auth:sanctum')->get('logout',[AuthController::class,'signOut'])->name('signOut');
+        });
+    
+        Route::middleware('login.verify')->group(function () {
+            Route::get('link/generate',[InvitationLinkController::class, 'generate'])->name('generate.link');
+    
+            Route::apiResource('project',ProjectController::class);
+            Route::apiResource('ticket',TicketController::class);
+            Route::patch('ticket-status/{ticket}',[TicketController::class, 'updateStatus']);
+        });
     });
 
     
