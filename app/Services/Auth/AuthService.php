@@ -65,24 +65,21 @@ class AuthService
             if ($data['password'] !== $data['cpassword']) {
                 throw new \Exception('Password do not match', 422);
             }
-
+            $isOwner = false;
             $slug = Str::of($data['company'])->slug('-');
 
-            $tenant = Tenant::query()->tenant($slug)->exists();
+            $tenant = Tenant::query()->tenant($slug)->first();
+            # Temporary - tenant should be created in admin side
+            // if (! $tenant) {
+            //     throw new \Exception('Company does not exist', 422);
+            // }
 
-            if (! $tenant) {
-                throw new \Exception('Company does not exist', 422);
-            }
-
-            DB::transaction(function () use ($data, $slug) {
+            DB::transaction(function () use ($data, $slug ,$isOwner, $tenant) {
                 $user = User::create([
                     'name' => $data['name'],
                     'email' => $data['email'],
                     'password' => Hash::make($data['password']),
                 ]);
-
-                $tenant = Tenant::query()->where('name', $data['company'])->first();
-                $isOwner = false;
 
                 if (! $tenant) {
                     $tenant = Tenant::create([
