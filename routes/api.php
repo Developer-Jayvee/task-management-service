@@ -16,9 +16,12 @@ Route::prefix('v1')->group(function () {
         return response()->json([
             'message' => 'Authenticated',
             'status' => true,
-            'data' => request()->user()
+            'data' => [
+                'user' => request()->user(),
+                'slug' => request()->user()->getTenant()
+            ]
         ]);
-    })->middleware('auth:sanctum');
+    })->middleware('login.verify');
 
     Route::middleware('throttle:60,1')->group( function () {
         Route::prefix('auth')->group(function() {
@@ -26,7 +29,7 @@ Route::prefix('v1')->group(function () {
             Route::post('register',[AuthController::class, 'signUp'])->name('signUp');
             Route::get('link/verify',[InvitationLinkController::class,'verify'])->name('verify.link');
     
-            Route::middleware('auth:sanctum')->get('logout',[AuthController::class,'signOut'])->name('signOut');
+            Route::middleware('login.verify')->get('logout',[AuthController::class,'signOut'])->name('signOut');
         });
     
         Route::middleware('login.verify')->group(function () {

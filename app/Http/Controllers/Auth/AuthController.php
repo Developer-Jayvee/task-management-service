@@ -24,7 +24,7 @@ class AuthController extends Controller
 
     public function signOut(Request $request) 
     {
-        return $this->_authService->signOut();
+        return $this->_authService->signOut($request);
     }
 
     public function signUp(SignUpRequest $request)

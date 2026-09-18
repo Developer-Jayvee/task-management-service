@@ -7,6 +7,7 @@ use App\Models\Member;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Traits\ResponseTrait;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -19,17 +20,16 @@ class AuthService
     public function signIn(string $email, string $password)
     {
         try {
-            $user = User::query()->where('email', $email)->firstOrFail();
+            $user = User::query()->where('email', $email)->with('member.tenant')->firstOrFail();
 
             if (! Hash::check($password, $user->password)) {
                 throw new UnauthorizedException('Email or Password is incorrect', 401);
             }
 
             $token = $user->createToken('auth-token')->plainTextToken;
-
             return $this->successResponse(
                 [
-                    'tenant' => $user?->tenant,
+                    'tenant' => $user?->getTenant()
                 ],
                 'Successfully login'
             )
@@ -43,7 +43,7 @@ class AuthService
                         true,
                         true,
                         false,
-                        'lax'
+                        'None'
                     )
                 );
         } catch (\Exception $exception) {
@@ -51,10 +51,9 @@ class AuthService
         }
     }
 
-    public function signOut()
+    public function signOut(Request $request)
     {
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
+        $request->user()?->currentAccessToken()->delete();
 
         return $this->successResponse(null, 'Successfully logout');
     }

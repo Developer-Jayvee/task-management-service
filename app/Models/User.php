@@ -34,8 +34,14 @@ class User extends Authenticatable
         ];
     }
 
-    public function tenant()
+    public function member()
     {
-        return $this->belongsTo(Member::class,'user_id');
+        return $this->hasOne(Member::class,'user_id','id');
     }
+
+    public function getTenant()
+    {
+        return $this?->member?->tenant?->slug;
+    }
+  
 }

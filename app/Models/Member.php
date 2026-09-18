@@ -18,4 +18,9 @@ class Member extends Model
     protected $casts = [
         'role' => Roles::class
     ];
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class,'tenant_id');
+    }
 }
