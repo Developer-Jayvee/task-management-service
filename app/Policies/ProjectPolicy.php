@@ -16,7 +16,7 @@ class ProjectPolicy
     {
         return $user->can('project delete');
     }
-    public function create(User $user, Project $project)
+    public function create(User $user)
     {
         return $user->can('project create');
     }

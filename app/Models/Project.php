@@ -15,11 +15,21 @@ class Project extends Model
         'description'
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime'
+    ];
     #[Override]
     public static function boot()
     {
+        parent::boot();
         static::creating(function ($model) {
-            $model->tenant_id = request()->user()?->tenant->id;
+            $model->tenant_id = request()->user()?->getTenant()?->id;
         }); 
+    }
+
+
+    public function members()
+    {
+        return $this->hasMany(Member::class,'tenant_id','tenant_id');
     }
 }

@@ -29,7 +29,7 @@ class AuthService
             $token = $user->createToken('auth-token')->plainTextToken;
             return $this->successResponse(
                 [
-                    'tenant' => $user?->getTenant()
+                    'tenant' => $user?->getTenant()?->slug
                 ],
                 'Successfully login'
             )

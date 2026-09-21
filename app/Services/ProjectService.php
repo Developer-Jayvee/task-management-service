@@ -20,15 +20,15 @@ class ProjectService
     public function storeProject(array $data)
     {
         try {
-            $project = Project::query()->create([
+            $project = Project::create([
                 'name' => $data['name'],
                 'description' => $data['description'] ?? null,
             ]);
-    
             return $this->successResponse(
                 new ProjectResource($project)
             );
         } catch (\Exception $exception) {
+            dd($exception);
             return $this->errorResponse($exception);
         }
     }

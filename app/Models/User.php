@@ -41,7 +41,7 @@ class User extends Authenticatable
 
     public function getTenant()
     {
-        return $this?->member?->tenant?->slug;
+        return $this?->member?->tenant;
     }
   
 }
