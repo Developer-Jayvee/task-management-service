@@ -32,4 +32,9 @@ class Project extends Model
     {
         return $this->hasMany(Member::class,'tenant_id','tenant_id');
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class,'project_id','id');
+    }
 }

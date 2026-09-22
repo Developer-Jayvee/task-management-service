@@ -12,7 +12,7 @@ class ProjectService
 
     public function getList()
     {
-        $projects = Project::query()->paginate(perPage : 10, page : 1);
+        $projects = Project::query()->with(['tickets'])->paginate(perPage : 10, page : 1);
 
         return ProjectResource::collection($projects);
     }
@@ -65,10 +65,10 @@ class ProjectService
     public function showProject(int $id) 
     {
         try {
-            $project = Project::query()->findOrFail($id);
+            $project = Project::query()->with(['tickets'])->findOrFail($id);
     
             return $this->successResponse(
-                data : $project
+                data : new ProjectResource($project)
             );
         } catch (\Exception $exception) {
             return $this->errorResponse($exception);

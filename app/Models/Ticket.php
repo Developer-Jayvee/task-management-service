@@ -32,6 +32,7 @@ class Ticket extends Model
     #[Override]
     public static function boot()
     {
+        parent::boot();
         static::creating( function ($model) {
             $model->created_by = request()->user()->id;
             $model->tenant_id = request()->user()?->tenant->id;
@@ -40,6 +41,6 @@ class Ticket extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class,'id','project_id');
+        return $this->belongsTo(Project::class,'project_id','id');
     }
 }
