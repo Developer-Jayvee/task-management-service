@@ -12,7 +12,7 @@ class UpdateTicketRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,8 +24,8 @@ class UpdateTicketRequest extends FormRequest
     {
         return [
             'title' => ['required','string'],
-            'description' => ['sometimes','string'],
-            'status' => ['required','in:to-do,on-going,completed'],
+            'description' => ['sometimes'],
+            'status' => ['required','in:to-do,in-progress,completed'],
             'priority' => ['required','in:low,medium,high'],
             'assignee_id' => ['sometimes'],
             'due_date' => ['required','string'],

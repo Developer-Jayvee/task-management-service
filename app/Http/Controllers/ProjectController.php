@@ -68,4 +68,9 @@ class ProjectController extends Controller
         
         return $this->_projectService->deleteProject($project);
     }
+
+    public function getProjectTickets(Project $project)
+    {
+        return $this->_projectService->getProjectTickets($project);
+    }
 }

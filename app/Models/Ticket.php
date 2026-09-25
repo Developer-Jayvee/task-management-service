@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
+use App\Models\Scopes\TenantScope;
 use Illuminate\Database\Eloquent\Model;
 use Override;
 
@@ -35,8 +36,10 @@ class Ticket extends Model
         parent::boot();
         static::creating( function ($model) {
             $model->created_by = request()->user()->id;
-            $model->tenant_id = request()->user()?->tenant->id;
+            $model->tenant_id = request()->user()?->getTenant()->id;
         });
+
+        static::addGlobalScope(new TenantScope);
     }
 
     public function project()

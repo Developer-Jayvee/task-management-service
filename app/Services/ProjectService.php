@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Resources\ProjectResource;
+use App\Http\Resources\TicketResource;
 use App\Models\Project;
 use App\Traits\ResponseTrait;
 
@@ -69,6 +70,17 @@ class ProjectService
     
             return $this->successResponse(
                 data : new ProjectResource($project)
+            );
+        } catch (\Exception $exception) {
+            return $this->errorResponse($exception);
+        }
+    }
+    
+    public function getProjectTickets(Project $project)
+    {
+        try {
+            return $this->successResponse(
+                data: TicketResource::collection($project->tickets())
             );
         } catch (\Exception $exception) {
             return $this->errorResponse($exception);

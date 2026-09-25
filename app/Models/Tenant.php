@@ -18,4 +18,9 @@ class Tenant extends Model
     {
         return $query->where('slug',$slug);
     }
+
+    public function members()
+    {
+        return $this->hasMany(Member::class,'tenant_id','id');
+    }
 }

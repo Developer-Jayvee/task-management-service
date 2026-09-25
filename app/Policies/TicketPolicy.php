@@ -19,7 +19,7 @@ class TicketPolicy
     {
         return $user->can('ticket delete');
     }
-    public function create(User $user, Ticket $ticket)
+    public function create(User $user)
     {
         return $user->can('ticket create');
     }

@@ -25,19 +25,20 @@ class TicketService
         try {
 
             $ticket = Ticket::query()->create([
-                'name' => $data['name'],
+                'title' => $data['title'],
                 'description' => $data['description'] ?? null,
                 'status' => $data['status'],
                 'priority' => $data['priority'],
-                'due_date' => Carbon::createFromFormat('Y-m-d H:i:s',$data['due_date']),
+                'due_date' => Carbon::createFromFormat('Y-m-d',$data['due_date']),
                 'assignee_id' => $data['assignee_id'] ?? null,
                 'project_id' => $data['project_id'],
             ]);
     
             return $this->successResponse(
-                new TicketResource($ticket)
+                data: new TicketResource($ticket)
             );
         } catch (\Exception $exception) {
+            dd($exception);
             return $this->errorResponse($exception);
         }
     }

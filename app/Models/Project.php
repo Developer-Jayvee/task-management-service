@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\TenantScope;
 use Illuminate\Database\Eloquent\Model;
 use Override;
 
@@ -25,6 +26,8 @@ class Project extends Model
         static::creating(function ($model) {
             $model->tenant_id = request()->user()?->getTenant()?->id;
         }); 
+
+        static::addGlobalScope(New TenantScope);
     }
 
 
