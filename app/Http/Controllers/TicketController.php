@@ -50,7 +50,6 @@ class TicketController extends Controller
     public function update(UpdateTicketRequest $request, int $ticketId)
     {
         $ticket = Ticket::query()->findOrFail($ticketId);
-        
         $this->authorize('update', $ticket);
 
         return $this->_ticketService->updateTicket(
