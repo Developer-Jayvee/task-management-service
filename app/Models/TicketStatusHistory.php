@@ -21,7 +21,7 @@ class TicketStatusHistory extends Model
     ];
 
     #[Override]
-    protected static function boot()
+    protected static function booted()
     {
         static::creating(function ($model) {
             $model->user_id = request()->user()->id;

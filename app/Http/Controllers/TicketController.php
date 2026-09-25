@@ -67,10 +67,12 @@ class TicketController extends Controller
         return $this->_ticketService->deleteTicket($ticket);
     }
 
-    public function updateStatus(UpdateTicketStatusRequest $request , Ticket $ticket)
+    public function updateStatus(UpdateTicketStatusRequest $request , int $ticketId)
     {
-        $this->authorize('updateStatus',$ticket);
+        $ticket = Ticket::query()->findOrFail($ticketId);
 
+        $this->authorize('updateStatus',$ticket);
+        
         return $this->_ticketService->transition(
             $ticket,
             $request->validated('status')

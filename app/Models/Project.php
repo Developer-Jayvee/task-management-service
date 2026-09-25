@@ -20,9 +20,8 @@ class Project extends Model
         'created_at' => 'datetime'
     ];
     #[Override]
-    public static function boot()
+    public static function booted()
     {
-        parent::boot();
         static::creating(function ($model) {
             $model->tenant_id = request()->user()?->getTenant()?->id;
         }); 

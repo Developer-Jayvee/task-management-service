@@ -14,10 +14,9 @@ class TenantScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $user = User::query()->findOrFail(request()->user()->id);
-
+        $tenantId = request()->user()?->getTenant()?->id;
         $builder->where(
-            'tenant_id', $user->getTenant()->id
+            'tenant_id', $tenantId
         );
     }
 }

@@ -12,7 +12,7 @@ class UpdateTicketStatusRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,6 @@ class UpdateTicketStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ticket_id' => ['required','exists:tickets,id'],
             'status' => ['required','in:to-do,in-progress,completed']
         ];
     }

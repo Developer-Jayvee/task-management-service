@@ -7,6 +7,7 @@ use App\Models\Ticket;
 use App\Models\TicketStatusHistory;
 use App\Traits\ResponseTrait;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class TicketService
 {
@@ -87,20 +88,22 @@ class TicketService
     public function transition(TIcket $ticket , string $status)
     {
         try {
-            
-            TicketStatusHistory::query()->create([
-                'ticket_id' => $ticket->id,
-                'status' => $status
-            ]);        
+            DB::beginTransaction();
+                TicketStatusHistory::query()->create([
+                    'ticket_id' => $ticket->id,
+                    'status' => $status
+                ]);        
+        
+                $ticket->update([ 'status' => $status ]);
     
-    
-            $ticket->update([ 'status' => $status ]);
-    
+            DB::commit();
+
             return $this->successResponse([
                 'ticket' => $ticket->fresh(),
                 'status' => $ticket->status
             ]);
         } catch (\Exception $exception) {
+            DB::rollBack();
             return $this->errorResponse($exception);
         }
     }

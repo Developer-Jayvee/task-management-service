@@ -24,7 +24,7 @@ Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
         Route::apiResource('project', ProjectController::class);
         Route::get('project/{project}/tickets',[ProjectController::class, 'getProjectTickets']);
         Route::apiResource('ticket', TicketController::class);
-        Route::patch('ticket-status/{ticket}', [TicketController::class, 'updateStatus']);
+        Route::patch('ticket/{ticketId}/status', [TicketController::class, 'updateStatus']);
 
         Route::get('assignee',[UserController::class,'getAssignees']);
     });
