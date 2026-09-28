@@ -21,7 +21,7 @@ class TicketController extends Controller
     {
         return $this->_ticketService->getList();
     }
-
+    
     /**
      * Store a newly created resource in storage.
      */
@@ -61,8 +61,10 @@ class TicketController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ticket $ticket)
+    public function destroy(int $ticketId)
     {
+        $ticket = Ticket::query()->findOrFail($ticketId);
+        
         $this->authorize('delete',$ticket);
 
         return $this->_ticketService->deleteTicket($ticket);
