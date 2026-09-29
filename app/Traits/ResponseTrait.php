@@ -19,7 +19,7 @@ trait ResponseTrait
      * @param int $code
      * @return JsonResponse
      */
-    public function successResponse(JsonResource|array|string|null $data = null , string $message = "Succes" , int $code = 200 ): JsonResponse
+    public function successResponse(mixed $data = null , string $message = "Succes" , int $code = 200 ): JsonResponse
     {
         return response()->json([
             'message' => $message,

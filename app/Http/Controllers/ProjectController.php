@@ -41,8 +41,10 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show(int $projectId)
     {
+        $project = Project::query()->findOrFail($projectId);
+
         $this->authorize('view',$project);
 
         return $this->successResponse(
@@ -53,8 +55,10 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(UpdateProjectRequest $request, int $projectId)
     {
+        $project = Project::query()->findOrFail($projectId);
+
         $this->authorize('update',$project);
 
         return $this->_projectService->updateProject(
@@ -76,9 +80,8 @@ class ProjectController extends Controller
 
     public function getProjectTickets(int $projectId, Request  $request)
     {
-        $project = Project::query()->findOrFail($projectId);
         return $this->_projectService->getProjectTickets(
-            $project,
+            $projectId,
             status: $request->query('status')
         );
     }

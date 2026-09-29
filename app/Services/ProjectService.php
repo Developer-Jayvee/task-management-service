@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Http\Resources\ProjectResource;
-use App\Http\Resources\TicketResource;
 use App\Models\Project;
 use App\Traits\ResponseTrait;
 
@@ -11,20 +10,20 @@ class ProjectService
 {
     use ResponseTrait;
 
-    public function getList(?string $search = null , ?string $sort = null)
+    public function getList(?string $search = null, ?string $sort = null)
     {
         $projects = Project::query();
-        if($search) {
-            $projects->when($search, function ($query) use($search) {
-                $query->where('name','LIKE',"%$search%");
-                $query->orWhere('description','LIKE',"%$search%");
+        if ($search) {
+            $projects->when($search, function ($query) use ($search) {
+                $query->where('name', 'LIKE', "%$search%");
+                $query->orWhere('description', 'LIKE', "%$search%");
             });
         }
-        if($sort) {
-            $projects->orderBy('created_at',$sort);
+        if ($sort) {
+            $projects->orderBy('created_at', $sort);
         }
         $projects = $projects->with(['tickets'])
-                    ->paginate(perPage : 10, page : 1);
+            ->paginate(perPage : 10, page : 1);
 
         return ProjectResource::collection($projects);
     }
@@ -36,22 +35,24 @@ class ProjectService
                 'name' => $data['name'],
                 'description' => $data['description'] ?? null,
             ]);
+
             return $this->successResponse(
                 new ProjectResource($project)
             );
         } catch (\Exception $exception) {
             dd($exception);
+
             return $this->errorResponse($exception);
         }
     }
-    
-    public function deleteProject(Project $project) 
+
+    public function deleteProject(Project $project)
     {
         try {
-            $project?->delete();    
+            $project?->delete();
 
             return $this->successResponse(
-                message: "Successfully deleted"
+                message: 'Successfully deleted'
             );
 
         } catch (\Exception $exception) {
@@ -62,23 +63,23 @@ class ProjectService
     public function updateProject(Project $project, array $data)
     {
         try {
-            if(! $project ) {
-                throw new \Exception("This project does not exist", 404);
+            if (! $project) {
+                throw new \Exception('This project does not exist', 404);
             }
-    
+
             $project->update($data);
-    
-            return $this->successResponse( data : $project->fresh() );
+
+            return $this->successResponse(data : $project->fresh());
         } catch (\Exception $exception) {
             return $this->errorResponse($exception);
         }
     }
 
-    public function showProject(int $id) 
+    public function showProject(int $id)
     {
         try {
             $project = Project::query()->with(['tickets'])->findOrFail($id);
-    
+
             return $this->successResponse(
                 data : new ProjectResource($project)
             );
@@ -86,16 +87,19 @@ class ProjectService
             return $this->errorResponse($exception);
         }
     }
-    
-    public function getProjectTickets(Project $project, ?string $status = null)
+
+    public function getProjectTickets(int $projectId, ?string $status = null)
     {
         try {
-            $tickets = $project->tickets->filter( function ($data) use($status){
-                if($status && !in_array($status,['all'])) return $status === $data['status']->value;
-                return true;                
-            });
+
+            $project = Project::query()->with(['tickets' => function ($query) use ($status) {
+                    if ($status && ! in_array($status, ['all'])) {
+                        $query->where('status', $status);
+                    }
+                }])->where('id', $projectId)
+                ->first();
             return $this->successResponse(
-                data: TicketResource::collection($tickets)
+                data: $project
             );
         } catch (\Exception $exception) {
             return $this->errorResponse($exception);
