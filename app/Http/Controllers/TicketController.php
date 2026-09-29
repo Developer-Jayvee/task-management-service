@@ -75,7 +75,6 @@ class TicketController extends Controller
     public function updateStatus(UpdateTicketStatusRequest $request , int $ticketId)
     {
         $ticket = Ticket::query()->findOrFail($ticketId);
-
         $this->authorize('updateStatus',$ticket);
         
         return $this->_ticketService->transition(

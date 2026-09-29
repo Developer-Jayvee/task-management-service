@@ -91,7 +91,7 @@ class ProjectService
     {
         try {
             $tickets = $project->tickets->filter( function ($data) use($status){
-                if($status) return $status === $data['status']->value;
+                if($status && !in_array($status,['all'])) return $status === $data['status']->value;
                 return true;                
             });
             return $this->successResponse(
