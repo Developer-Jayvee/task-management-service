@@ -35,8 +35,10 @@ class TicketController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Ticket $ticket)
+    public function show(int $ticketId)
     {
+        $ticket = Ticket::query()->findOrFail($ticketId);
+        
         $this->authorize('view',$ticket);
 
         return $this->successResponse(

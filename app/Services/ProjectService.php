@@ -80,7 +80,7 @@ class ProjectService
     {
         try {
             return $this->successResponse(
-                data: TicketResource::collection($project->tickets())
+                data: TicketResource::collection($project->tickets)
             );
         } catch (\Exception $exception) {
             return $this->errorResponse($exception);

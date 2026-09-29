@@ -22,7 +22,7 @@ Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
         Route::get('link/generate', [InvitationLinkController::class, 'generate'])->name('generate.link');
 
         Route::apiResource('project', ProjectController::class);
-        Route::get('project/{project}/tickets',[ProjectController::class, 'getProjectTickets']);
+        Route::get('project/{projectId}/tickets',[ProjectController::class, 'getProjectTickets']);
         Route::apiResource('ticket', TicketController::class);
         Route::patch('ticket/{ticketId}/status', [TicketController::class, 'updateStatus']);
 
