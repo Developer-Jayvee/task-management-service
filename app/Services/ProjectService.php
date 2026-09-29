@@ -87,11 +87,15 @@ class ProjectService
         }
     }
     
-    public function getProjectTickets(Project $project)
+    public function getProjectTickets(Project $project, ?string $status = null)
     {
         try {
+            $tickets = $project->tickets->filter( function ($data) use($status){
+                if($status) return $status === $data['status']->value;
+                return true;                
+            });
             return $this->successResponse(
-                data: TicketResource::collection($project->tickets)
+                data: TicketResource::collection($tickets)
             );
         } catch (\Exception $exception) {
             return $this->errorResponse($exception);

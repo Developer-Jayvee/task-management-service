@@ -74,11 +74,12 @@ class ProjectController extends Controller
         return $this->_projectService->deleteProject($project);
     }
 
-    public function getProjectTickets(int $projectId)
+    public function getProjectTickets(int $projectId, Request  $request)
     {
         $project = Project::query()->findOrFail($projectId);
         return $this->_projectService->getProjectTickets(
-            $project
+            $project,
+            status: $request->query('status')
         );
     }
 }
