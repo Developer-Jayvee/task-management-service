@@ -11,9 +11,20 @@ class ProjectService
 {
     use ResponseTrait;
 
-    public function getList()
+    public function getList(?string $search = null , ?string $sort = null)
     {
-        $projects = Project::query()->with(['tickets'])->paginate(perPage : 10, page : 1);
+        $projects = Project::query();
+        if($search) {
+            $projects->when($search, function ($query) use($search) {
+                $query->where('name','LIKE',"%$search%");
+                $query->orWhere('description','LIKE',"%$search%");
+            });
+        }
+        if($sort) {
+            $projects->orderBy('created_at',$sort);
+        }
+        $projects = $projects->with(['tickets'])
+                    ->paginate(perPage : 10, page : 1);
 
         return ProjectResource::collection($projects);
     }
