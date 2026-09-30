@@ -27,14 +27,22 @@ class InvitationLinkService
                 $invitation->delete();
                 throw new \Exception('Link is already expired', 422);
             }
-            
+
             return $this->successResponse([
                 'slug' => $payload['slug'],
             ]);
         } catch (\Exception $exception) {
             return $this->errorResponse($exception);
         }
+    }
+    public static function removeUsedLinks(string $link)
+    {
+        $payload = Crypt::decrypt($link);
 
+        if (! $payload) return false;
+        $invitation = InvitationLink::query()->where('code', $payload['code'])->first();
+        if($invitation) return $invitation->delete();
+        return false;
     }
 
     public function generateLink()
@@ -53,7 +61,7 @@ class InvitationLinkService
             ];
 
             $link = Crypt::encrypt($payload);
-            $formatted = env('APP_CLIENT_URL')."/register?link=$link";
+            $formatted = env('APP_CLIENT_URL') . "/register?link=$link";
             InvitationLink::create([
                 'code' => $code,
                 'user_id' => request()->user()->id,

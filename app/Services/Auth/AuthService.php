@@ -97,6 +97,10 @@ class AuthService
                     'role' => $isOwner ? Roles::OWNER : Roles::MEMBER,
                 ]);
 
+
+                if(! $isOwner) {
+                    InvitationLinkService::removeUsedLinks($data['link']);
+                }
                 $user->assignRole(
                     $isOwner ? Roles::OWNER : Roles::MEMBER
                 );
