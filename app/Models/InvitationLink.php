@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Override;
 
 class InvitationLink extends Model
 {
+    use SoftDeletes;
+    
     CONST EXPIRATION_TIME  = 30;
     protected $table = "invitation_links";
 
@@ -26,7 +29,7 @@ class InvitationLink extends Model
     ];
 
     #[Override]
-    public static function boot()
+    public static function booted()
     {
         static::creating( function ($model) {
             $model->expiration_date = Carbon::now()->addMinutes(30);

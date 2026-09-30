@@ -27,7 +27,8 @@ class SignUpRequest extends FormRequest
             'email' => ['required','email'],
             'password' => ['required','string'],
             'cpassword' => ['required','string'],
-            'company' => ['required','string']
+            'company' => ['required','string'],
+            'link' => ['sometimes']
         ];
     }
 }

@@ -15,4 +15,9 @@ class UserController extends Controller
     {
         return $this->_userService->usersTenant($request);
     }
+
+    public function getTenantUsers(Request $request) 
+    {
+        return $this->_userService->tenantMembers($request);
+    }
 }

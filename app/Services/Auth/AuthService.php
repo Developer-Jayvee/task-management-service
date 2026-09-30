@@ -3,11 +3,14 @@
 namespace App\Services\Auth;
 
 use App\Enums\Roles;
+use App\Models\InvitationLink;
 use App\Models\Member;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -27,9 +30,10 @@ class AuthService
             }
 
             $token = $user->createToken('auth-token')->plainTextToken;
+
             return $this->successResponse(
                 [
-                    'tenant' => $user?->getTenant()?->slug
+                    'tenant' => $user?->getTenant()?->slug,
                 ],
                 'Successfully login'
             )
@@ -54,7 +58,7 @@ class AuthService
     public function signOut(Request $request)
     {
         $request->user()?->currentAccessToken()->delete();
-        
+
         return $this->successResponse(null, 'Successfully logout');
     }
 
@@ -64,16 +68,14 @@ class AuthService
             if ($data['password'] !== $data['cpassword']) {
                 throw new \Exception('Password do not match', 422);
             }
+            
             $isOwner = false;
+
             $slug = Str::of($data['company'])->slug('-');
-
+         
             $tenant = Tenant::query()->tenant($slug)->first();
-            # Temporary - tenant should be created in admin side
-            // if (! $tenant) {
-            //     throw new \Exception('Company does not exist', 422);
-            // }
 
-            DB::transaction(function () use ($data, $slug ,$isOwner, $tenant) {
+            DB::transaction(function () use ($data, $slug, $isOwner, $tenant) {
                 $user = User::create([
                     'name' => $data['name'],
                     'email' => $data['email'],
@@ -86,7 +88,7 @@ class AuthService
                         'slug' => $slug,
                         'plan' => 'pro',
                     ]);
-                    $isOwner = true;
+                    $isOwner =  isset($data['link']) ? false : true;
                 }
 
                 Member::create([
@@ -107,4 +109,6 @@ class AuthService
         }
 
     }
+
+   
 }

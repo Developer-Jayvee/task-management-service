@@ -21,6 +21,6 @@ class Tenant extends Model
 
     public function members()
     {
-        return $this->hasMany(Member::class,'tenant_id','id');
+        return $this->hasMany(Member::class,'tenant_id','id')->with('user');
     }
 }

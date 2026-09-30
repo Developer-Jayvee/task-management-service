@@ -43,4 +43,8 @@ class User extends Authenticatable
     {
         return $this?->member?->tenant;
     }
+    public function getTenantMembers()
+    {
+        return $this?->member?->tenant?->members ?? collect();
+    }
 }

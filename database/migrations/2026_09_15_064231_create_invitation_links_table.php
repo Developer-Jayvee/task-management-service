@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string("code");
             $table->foreignId("user_id")->nullable();
             $table->foreignId("tenant_id")->nullable();
-            $table->string("link");
+            $table->text("link");
             $table->boolean('is_accepted')->default(false);
             $table->dateTime("expiration_date");
             $table->timestamps();

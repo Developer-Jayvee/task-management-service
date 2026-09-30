@@ -13,10 +13,10 @@ class InvitationLinkController extends Controller
         protected InvitationLinkService $_invitationService
     ) {}
 
-    public function verify(InvitationRequest $request)
+    public function verify(Request $request)
     {
         return $this->_invitationService->verifyLink(
-            link : $request->validated('link')
+            link : $request->query('link')
         );
     }
 

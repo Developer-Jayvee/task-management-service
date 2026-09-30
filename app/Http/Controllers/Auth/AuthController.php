@@ -32,7 +32,7 @@ class AuthController extends Controller
         
         return $this->_authService->signUp(
             data : $request->all()
-        );
+        ); 
     }
 
 }
