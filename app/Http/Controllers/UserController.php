@@ -11,13 +11,12 @@ class UserController extends Controller
         protected UserService $_userService
     ) {}
 
+    public function index(Request $request) 
+    {
+        return $this->_userService->tenantMembers($request);
+    }
     public function getAssignees(Request $request)
     {
         return $this->_userService->usersTenant($request);
-    }
-
-    public function getTenantUsers(Request $request) 
-    {
-        return $this->_userService->tenantMembers($request);
     }
 }
