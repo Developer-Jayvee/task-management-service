@@ -13,7 +13,7 @@ class UserController extends Controller
 
     public function index(Request $request) 
     {
-        return $this->_userService->tenantMembers($request);
+        return $this->_userService->getTenantMembers($request);
     }
     public function getAssignees(Request $request)
     {

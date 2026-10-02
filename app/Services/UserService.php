@@ -6,6 +6,7 @@ use App\Http\Resources\AssigneeResource;
 use App\Http\Resources\UserResource;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Models\Member;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 
@@ -25,10 +26,16 @@ class UserService
         }
     }
 
-    public function tenantMembers(Request $request)
+    public function getTenantMembers(Request $request)
     {
         try {
-            $members = $request->user()->getTenantMembers();
+            $tenant = $request->user()->getTenant();
+            $members = Member::query()->with('user')
+                        ->when($request->query('sort'), function ($query) use($request) {
+                            $query->where('role',$request->query('sort'));
+                        })
+                        ->where('tenant_id',$tenant->id)->get();
+            
             return $this->successResponse(
                 data: UserResource::collection($members)
             );
