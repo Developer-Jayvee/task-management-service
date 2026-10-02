@@ -28,9 +28,11 @@ class AuthService
             if (! Hash::check($password, $user->password)) {
                 throw new UnauthorizedException('Email or Password is incorrect', 401);
             }
-
+            if( ! $user?->getTenant()?->slug) {
+                 throw new UnauthorizedException('Failed to login. Please contact your admin for assistance.', 401);
+            }
+            
             $token = $user->createToken('auth-token')->plainTextToken;
-
             return $this->successResponse(
                 [
                     'tenant' => $user?->getTenant()?->slug,
