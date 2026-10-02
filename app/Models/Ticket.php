@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
 use App\Models\Scopes\TenantScope;
+use App\Models\Scopes\TicketScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Override;
@@ -40,8 +41,8 @@ class Ticket extends Model
             $model->created_by = $user->id;
             $model->tenant_id = $user?->getTenant()->id;
         });
-      
         static::addGlobalScope(new TenantScope);
+        static::addGlobalScope(new TicketScope);
     }
     public function tenant(Builder $query) 
     {

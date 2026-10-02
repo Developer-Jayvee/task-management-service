@@ -36,6 +36,7 @@ class AuthService
             return $this->successResponse(
                 [
                     'tenant' => $user?->getTenant()?->slug,
+                    'user' => $user
                 ],
                 'Successfully login'
             )

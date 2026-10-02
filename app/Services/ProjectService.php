@@ -91,11 +91,14 @@ class ProjectService
     public function getProjectTickets(int $projectId, ?string $status = null)
     {
         try {
-
-            $project = Project::query()->with(['tickets' => function ($query) use ($status) {
+            $role = request()->user()->member->role;
+            $project = Project::query()->with(['tickets' => function ($query) use ($status,$role) {
                     if ($status && ! in_array($status, ['all'])) {
                         $query->where('status', $status);
                     }
+                    // if($role->value === 'member') {
+                    //     $query->where('assignee_id',request()->user()->id);
+                    // }
                 }])->where('id', $projectId)
                 ->first();
             return $this->successResponse(
