@@ -34,6 +34,13 @@ class UserService
                         ->when($request->query('sort'), function ($query) use($request) {
                             $query->where('role',$request->query('sort'));
                         })
+                        ->whereHas('user', function ($query) use($request){
+                            $query->when($request->query('search'), function ($query) use($request) {
+                                $search = $request->query('search');
+                                $query->where('name','LIKE',"%$search%")
+                                ->orWhere('email','LIKE',"%$search%");
+                            });
+                        })
                         ->where('tenant_id',$tenant->id)->get();
             
             return $this->successResponse(
