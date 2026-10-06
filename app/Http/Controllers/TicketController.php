@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateTicketStatusRequest;
 use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
 use App\Services\TicketService;
+use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
@@ -17,9 +18,9 @@ class TicketController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->_ticketService->getList();
+        return $this->_ticketService->getList($request);
     }
     
     /**

@@ -7,6 +7,7 @@ use App\Models\Ticket;
 use App\Models\TicketStatusHistory;
 use App\Traits\ResponseTrait;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TicketService
@@ -14,9 +15,11 @@ class TicketService
     use ResponseTrait;
 
 
-    public function getList()
+    public function getList(Request $request)
     {
-        $ticket = Ticket::query()->paginate(perPage : 10, page : 1);
+        $perPage = $request->query('perPage',10);
+        $page = $request->query('page',1);
+        $ticket = Ticket::query()->paginate(perPage : $perPage, page : $page);
 
         return TicketResource::collection($ticket);
     }
