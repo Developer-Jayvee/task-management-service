@@ -21,7 +21,8 @@ Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
     Route::middleware('login.verify')->group(function () {
         Route::get('link/generate', [InvitationLinkController::class, 'generate'])->name('generate.link');
 
-        Route::apiResource('project', ProjectController::class);
+        Route::apiResource('project', ProjectController::class)->except(['show']);
+        Route::get('project/{projectId}/details',[ProjectController::class, 'show']);
         Route::get('project/{projectId}/tickets',[ProjectController::class, 'getProjectTickets']);
         Route::apiResource('ticket', TicketController::class)->except(['show']);
         Route::get('ticket/{ticketId}/details',[TicketController::class, 'show']);
