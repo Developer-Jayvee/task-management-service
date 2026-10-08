@@ -38,7 +38,7 @@ class TicketController extends Controller
      */
     public function show(int $ticketId)
     {
-        $ticket = Ticket::query()->findOrFail($ticketId);
+        $ticket = Ticket::query()->with('user')->findOrFail($ticketId);
         
         $this->authorize('view',$ticket);
 
