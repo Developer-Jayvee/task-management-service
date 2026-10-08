@@ -19,8 +19,6 @@ class ProjectResource extends JsonResource
             'name' => $this->name,
             'description' => $this?->description ?? "",
             'created_at' => $this->created_at,
-            'tickets' => $this?->tickets ?? []
-            // 'members' => $this?->members ?? []
         ];
     }
 }

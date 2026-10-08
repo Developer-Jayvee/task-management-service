@@ -54,8 +54,12 @@ class Ticket extends Model
     {
         return $this->belongsTo(Project::class,'project_id','id');
     }
-    public function user() 
+    public function createdBy() 
     {
         return $this->belongsTo(User::class,'created_by','id');
+    }
+    public function assignee() 
+    {
+        return $this->belongsTo(User::class,'assignee_id','id');
     }
 }
