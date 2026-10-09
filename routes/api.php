@@ -37,14 +37,13 @@ Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
     });
 
     Route::get('/identity-check', function (Request $request) {
-        if (! in_array($_GET['slug'], ['login']) && request()->user()->getTenant()?->slug !== $_GET['slug']) {
+        if (!request()->user()->getTenant()?->slug) {
             return response()->json([
                 'message' => 'Unauthenticated',
                 'status' => false,
                 'data' => null,
             ], 401);
         }
-
         return response()->json([
             'message' => 'Authenticated',
             'status' => true,
