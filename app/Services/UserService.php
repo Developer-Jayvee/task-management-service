@@ -29,8 +29,13 @@ class UserService
     public function getTenantMembers(Request $request)
     {
         try {
-            $tenant = $request->user()->getTenant();
-            $members = Member::query()->with('user')
+            $perPage = $request->query('perPage',10);
+            $page = $request->query('page',1);
+
+            $user = $request->user();
+            $tenant = $user?->member?->tenant;
+            
+            $members = $tenant?->members()
                         ->when($request->query('sort'), function ($query) use($request) {
                             $query->where('role',$request->query('sort'));
                         })
@@ -41,11 +46,8 @@ class UserService
                                 ->orWhere('email','LIKE',"%$search%");
                             });
                         })
-                        ->where('tenant_id',$tenant->id)->get();
-            
-            return $this->successResponse(
-                data: UserResource::collection($members)
-            );
+                        ->where('tenant_id',$tenant->id)->paginate(perPage: $perPage, page: $page);
+            return UserResource::collection($members);
         } catch (\Exception $exception) {
             return $this->errorResponse($exception);
         }

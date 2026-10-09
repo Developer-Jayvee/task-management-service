@@ -21,7 +21,7 @@ class Member extends Model
 
     public function tenant()
     {
-        return $this->belongsTo(Tenant::class,'tenant_id');
+        return $this->belongsTo(Tenant::class,'tenant_id')->with('members');
     }
     public function user()
     {
