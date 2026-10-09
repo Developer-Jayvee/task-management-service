@@ -52,4 +52,20 @@ class UserService
             return $this->errorResponse($exception);
         }
     }
+
+    public function toggleStatus(User $user, string $status)
+    {
+        try {
+            $user->update([
+                'is_active' => $status === 'activate',
+            ]);
+
+            return $this->successResponse(
+                message: 'Successfully change status',
+                data: $user->fresh()
+            );
+        } catch (\Exception $exception) {
+            return $this->errorResponse($exception);
+        }
+    }
 }

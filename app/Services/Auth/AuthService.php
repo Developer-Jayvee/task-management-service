@@ -7,6 +7,7 @@ use App\Models\Member;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Traits\ResponseTrait;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,6 +23,9 @@ class AuthService
         try {
             $user = User::query()->where('email', $email)->with('member.tenant')->firstOrFail();
 
+            if (! $user->is_active) {
+                throw new AuthorizationException('User account is currently deactivated. Please contact your admin for further assistance.',403);
+            }
             if (! $user?->getTenant()?->slug) {
                 throw new UnauthorizedException('Failed to login. Please contact your admin for assistance.', 401);
             }
