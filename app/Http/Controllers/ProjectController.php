@@ -8,14 +8,13 @@ use App\Http\Resources\ProjectResource;
 use App\Models\Project;
 use App\Services\ProjectService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
 {
-
     public function __construct(
         protected ProjectService $_projectService
     ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -33,7 +32,7 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
 
-        $this->authorize('create',Project::class);
+        $this->authorize('create', Project::class);
 
         return $this->_projectService->storeProject($request->all());
     }
@@ -45,7 +44,7 @@ class ProjectController extends Controller
     {
         $project = Project::query()->findOrFail($projectId);
 
-        $this->authorize('view',$project);
+        $this->authorize('view', $project);
 
         return $this->successResponse(
             data : new ProjectResource($project)
@@ -59,7 +58,7 @@ class ProjectController extends Controller
     {
         $project = Project::query()->findOrFail($projectId);
 
-        $this->authorize('update',$project);
+        $this->authorize('update', $project);
 
         return $this->_projectService->updateProject(
             $project,
@@ -73,12 +72,12 @@ class ProjectController extends Controller
     public function destroy(int $projectId)
     {
         $project = Project::query()->findOrFail($projectId);
-        $this->authorize('delete',$project);
-        
+        $this->authorize('delete', $project);
+
         return $this->_projectService->deleteProject($project);
     }
 
-    public function getProjectTickets(int $projectId, Request  $request)
+    public function getProjectTickets(int $projectId, Request $request)
     {
         return $this->_projectService->getProjectTickets(
             $projectId,

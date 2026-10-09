@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Override;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password'])]
@@ -18,9 +17,10 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens, HasRoles;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
-    protected string $guard_name = "api";
+    protected string $guard_name = 'api';
+
     /**
      * Get the attributes that should be cast.
      *
@@ -36,13 +36,14 @@ class User extends Authenticatable
 
     public function member()
     {
-        return $this->hasOne(Member::class,'user_id','id');
+        return $this->hasOne(Member::class, 'user_id', 'id');
     }
 
     public function getTenant()
     {
         return $this?->member?->tenant;
     }
+
     public function getTenantMembers()
     {
         return $this?->member?->tenant?->members ?? collect();

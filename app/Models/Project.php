@@ -8,35 +8,35 @@ use Override;
 
 class Project extends Model
 {
-    protected $table = "projects";
+    protected $table = 'projects';
 
     protected $fillable = [
         'tenant_id',
         'name',
-        'description'
+        'description',
     ];
 
     protected $casts = [
-        'created_at' => 'datetime'
+        'created_at' => 'datetime',
     ];
+
     #[Override]
     public static function booted()
     {
         static::creating(function ($model) {
             $model->tenant_id = request()->user()?->getTenant()?->id;
-        }); 
+        });
 
-        static::addGlobalScope(New TenantScope);
+        static::addGlobalScope(new TenantScope);
     }
-
 
     public function members()
     {
-        return $this->hasMany(Member::class,'tenant_id','tenant_id');
+        return $this->hasMany(Member::class, 'tenant_id', 'tenant_id');
     }
 
     public function tickets()
     {
-        return $this->hasMany(Ticket::class,'project_id');
+        return $this->hasMany(Ticket::class, 'project_id');
     }
 }

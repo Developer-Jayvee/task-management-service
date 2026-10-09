@@ -23,12 +23,12 @@ class UpdateTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required','string'],
+            'title' => ['required', 'string'],
             'description' => ['sometimes'],
-            'status' => ['required','in:to-do,in-progress,completed'],
-            'priority' => ['required','in:low,medium,high'],
+            'status' => ['required', 'in:to-do,in-progress,completed'],
+            'priority' => ['required', 'in:low,medium,high'],
             'assignee_id' => ['sometimes'],
-            'due_date' => ['required','string'],
+            'due_date' => ['required', 'string'],
         ];
     }
 }

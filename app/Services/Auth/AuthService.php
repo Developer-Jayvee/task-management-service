@@ -3,14 +3,11 @@
 namespace App\Services\Auth;
 
 use App\Enums\Roles;
-use App\Models\InvitationLink;
 use App\Models\Member;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -25,18 +22,19 @@ class AuthService
         try {
             $user = User::query()->where('email', $email)->with('member.tenant')->firstOrFail();
 
-            if( ! $user?->getTenant()?->slug) {
-                 throw new UnauthorizedException('Failed to login. Please contact your admin for assistance.', 401);
+            if (! $user?->getTenant()?->slug) {
+                throw new UnauthorizedException('Failed to login. Please contact your admin for assistance.', 401);
             }
             if (! Hash::check($password, $user->password)) {
                 throw new UnauthorizedException('Email or Password is incorrect', 401);
             }
-            
+
             $token = $user->createToken('auth-token')->plainTextToken;
+
             return $this->successResponse(
                 [
                     'tenant' => $user?->getTenant()?->slug,
-                    'user' => $user
+                    'user' => $user,
                 ],
                 'Successfully login'
             )
@@ -71,11 +69,11 @@ class AuthService
             if ($data['password'] !== $data['cpassword']) {
                 throw new \Exception('Password do not match', 422);
             }
-            
+
             $isOwner = false;
 
             $slug = Str::of($data['company'])->slug('-');
-         
+
             $tenant = Tenant::query()->tenant($slug)->first();
 
             DB::transaction(function () use ($data, $slug, $isOwner, $tenant) {
@@ -91,7 +89,7 @@ class AuthService
                         'slug' => $slug,
                         'plan' => 'pro',
                     ]);
-                    $isOwner =  isset($data['link']) ? false : true;
+                    $isOwner = isset($data['link']) ? false : true;
                 }
 
                 Member::create([
@@ -100,8 +98,7 @@ class AuthService
                     'role' => $isOwner ? Roles::OWNER : Roles::MEMBER,
                 ]);
 
-
-                if(! $isOwner) {
+                if (! $isOwner) {
                     InvitationLinkService::removeUsedLinks($data['link']);
                 }
                 $user->assignRole(
@@ -116,6 +113,4 @@ class AuthService
         }
 
     }
-
-   
 }

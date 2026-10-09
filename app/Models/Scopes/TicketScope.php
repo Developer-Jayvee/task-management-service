@@ -16,6 +16,8 @@ class TicketScope implements Scope
         $user = request()->user();
         $member = $user->member;
 
-        if($member->role->value === 'member') $builder->where('assignee_id',$user->id);
+        if ($member->role->value === 'member') {
+            $builder->where('assignee_id', $user->id);
+        }
     }
 }

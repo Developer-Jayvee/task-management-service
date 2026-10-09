@@ -22,17 +22,16 @@ class AuthController extends Controller
         );
     }
 
-    public function signOut(Request $request) 
+    public function signOut(Request $request)
     {
         return $this->_authService->signOut($request);
     }
 
     public function signUp(SignUpRequest $request)
     {
-        
+
         return $this->_authService->signUp(
             data : $request->all()
-        ); 
+        );
     }
-
 }

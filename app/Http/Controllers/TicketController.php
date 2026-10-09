@@ -12,9 +12,10 @@ use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
-       public function __construct(
+    public function __construct(
         protected TicketService $_ticketService
     ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -22,13 +23,13 @@ class TicketController extends Controller
     {
         return $this->_ticketService->getList($request);
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreTicketRequest $request)
     {
-        $this->authorize('create',Ticket::class);
+        $this->authorize('create', Ticket::class);
 
         return $this->_ticketService->storeTicket($request->all());
     }
@@ -39,8 +40,8 @@ class TicketController extends Controller
     public function show(int $ticketId)
     {
         $ticket = Ticket::query()->with(['createdBy', 'assignee'])->findOrFail($ticketId);
-        
-        $this->authorize('view',$ticket);
+
+        $this->authorize('view', $ticket);
 
         return $this->successResponse(
             data : new TicketResource($ticket)
@@ -67,17 +68,17 @@ class TicketController extends Controller
     public function destroy(int $ticketId)
     {
         $ticket = Ticket::query()->findOrFail($ticketId);
-        
-        $this->authorize('delete',$ticket);
+
+        $this->authorize('delete', $ticket);
 
         return $this->_ticketService->deleteTicket($ticket);
     }
 
-    public function updateStatus(UpdateTicketStatusRequest $request , int $ticketId)
+    public function updateStatus(UpdateTicketStatusRequest $request, int $ticketId)
     {
         $ticket = Ticket::query()->findOrFail($ticketId);
-        $this->authorize('updateStatus',$ticket);
-        
+        $this->authorize('updateStatus', $ticket);
+
         return $this->_ticketService->transition(
             $ticket,
             $request->validated('status')

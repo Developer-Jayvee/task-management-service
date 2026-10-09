@@ -23,7 +23,7 @@ class InvitationRequest extends FormRequest
     public function rules(): array
     {
         return [
-           'link' => ['required','string']
+            'link' => ['required', 'string'],
         ];
     }
 }

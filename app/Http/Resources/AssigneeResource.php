@@ -17,7 +17,7 @@ class AssigneeResource extends JsonResource
         return [
             'id' => $this->id,
             'role' => $this->role,
-            'user' => $this?->user ?? null
+            'user' => $this?->user ?? null,
         ];
     }
 }

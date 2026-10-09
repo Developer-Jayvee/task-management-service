@@ -6,21 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tenant extends Model
 {
-    protected $table = "tenant";
+    protected $table = 'tenant';
 
     protected $fillable = [
         'name',
         'slug',
-        'plan'
+        'plan',
     ];
 
-    public function scopeTenant($query , string $slug)
+    public function scopeTenant($query, string $slug)
     {
-        return $query->where('slug',$slug);
+        return $query->where('slug', $slug);
     }
 
     public function members()
     {
-        return $this->hasMany(Member::class,'tenant_id','id')->with('user');
+        return $this->hasMany(Member::class, 'tenant_id', 'id')->with('user');
     }
 }

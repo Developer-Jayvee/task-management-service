@@ -23,13 +23,13 @@ class StoreTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'project_id' => ['required','numeric','exists:projects,id'],
-            'title' => ['required','string'],
+            'project_id' => ['required', 'numeric', 'exists:projects,id'],
+            'title' => ['required', 'string'],
             'description' => ['sometimes'],
-            'status' => ['required','in:to-do,in-progress,completed'],
-            'priority' => ['required','in:low,medium,high'],
-            'assignee_id' => ['sometimes','numeric'],
-            'due_date' => ['required','string'],
+            'status' => ['required', 'in:to-do,in-progress,completed'],
+            'priority' => ['required', 'in:low,medium,high'],
+            'assignee_id' => ['sometimes', 'numeric'],
+            'due_date' => ['required', 'string'],
         ];
     }
 }

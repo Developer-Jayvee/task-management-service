@@ -23,8 +23,8 @@ class SignInRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['email','required','exists:users,email'],
-            'password' => ['required','min:8']
+            'email' => ['email', 'required', 'exists:users,email'],
+            'password' => ['required', 'min:8'],
         ];
     }
 }

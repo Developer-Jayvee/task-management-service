@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 class LoginVerify
 {
     use ResponseTrait;
+
     /**
      * Handle an incoming request.
      *
@@ -20,27 +21,28 @@ class LoginVerify
     public function handle(Request $request, Closure $next): Response
     {
         $token = $request->cookie('auth-token');
-        if(!$token) {
+        if (! $token) {
             return $this->successResponse(
-                message: "Unauthenticated",
+                message: 'Unauthenticated',
                 code: 401
             );
         }
 
         $accessToken = PersonalAccessToken::findToken($token);
 
-        if(! $accessToken) {
+        if (! $accessToken) {
             return $this->successResponse(
-                message: "Unauthenticated",
+                message: 'Unauthenticated',
                 code: 401
             );
         }
-        
-       $user = $accessToken->tokenable;
+
+        $user = $accessToken->tokenable;
 
         $user->withAccessToken($accessToken);
 
         Auth::setUser($user);
+
         return $next($request);
     }
 }

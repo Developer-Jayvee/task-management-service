@@ -7,24 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Member extends Model
 {
-    protected $table = "membership";
+    protected $table = 'membership';
 
     protected $fillable = [
         'user_id',
         'tenant_id',
-        'role'
+        'role',
     ];
 
     protected $casts = [
-        'role' => Roles::class
+        'role' => Roles::class,
     ];
 
     public function tenant()
     {
-        return $this->belongsTo(Tenant::class,'tenant_id')->with('members');
+        return $this->belongsTo(Tenant::class, 'tenant_id')->with('members');
     }
+
     public function user()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

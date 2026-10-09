@@ -4,7 +4,6 @@ namespace App\Services\Auth;
 
 use App\Models\InvitationLink;
 use App\Traits\ResponseTrait;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
@@ -35,13 +34,19 @@ class InvitationLinkService
             return $this->errorResponse($exception);
         }
     }
+
     public static function removeUsedLinks(string $link)
     {
         $payload = Crypt::decrypt($link);
 
-        if (! $payload) return false;
+        if (! $payload) {
+            return false;
+        }
         $invitation = InvitationLink::query()->where('code', $payload['code'])->first();
-        if($invitation) return $invitation->delete();
+        if ($invitation) {
+            return $invitation->delete();
+        }
+
         return false;
     }
 
@@ -61,7 +66,7 @@ class InvitationLinkService
             ];
 
             $link = Crypt::encrypt($payload);
-            $formatted = env('APP_CLIENT_URL') . "/register?link=$link";
+            $formatted = config('app.CLIENT_APP_URL')."?link=$link";
             InvitationLink::create([
                 'code' => $code,
                 'user_id' => request()->user()->id,

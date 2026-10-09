@@ -13,11 +13,11 @@ class TicketStatusHistory extends Model
     protected $fillable = [
         'ticket_id',
         'user_id',
-        'status'
+        'status',
     ];
 
     protected $casts = [
-        'status' => TicketStatus::class
+        'status' => TicketStatus::class,
     ];
 
     #[Override]
@@ -27,5 +27,4 @@ class TicketStatusHistory extends Model
             $model->user_id = request()->user()->id;
         });
     }
-
 }
