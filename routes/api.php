@@ -14,8 +14,10 @@ Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
         Route::post('login', [AuthController::class, 'signIn'])->name('signIn');
         Route::post('register', [AuthController::class, 'signUp'])->name('signUp');
         Route::get('link/verify', [InvitationLinkController::class, 'verify'])->name('verify.link');
-
-        Route::middleware('login.verify')->get('logout', [AuthController::class, 'signOut'])->name('signOut');
+        Route::middleware('login.verify')->group(function() {
+            Route::get('logout', [AuthController::class, 'signOut'])->name('signOut');
+            Route::post('reset-password',[AuthController::class, 'resetPassword'])->name('reset.password');
+        });
     });
 
     Route::middleware('login.verify')->group(function () {

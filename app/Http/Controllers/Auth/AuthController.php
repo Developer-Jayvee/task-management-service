@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SignInRequest;
 use App\Http\Requests\SignUpRequest;
+use App\Http\Requests\UpdateResetPasswordRequest;
 use App\Services\Auth\AuthService;
 use Illuminate\Http\Request;
 
@@ -33,5 +34,10 @@ class AuthController extends Controller
         return $this->_authService->signUp(
             data : $request->all()
         );
+    }
+
+    public function resetPassword(UpdateResetPasswordRequest $request) 
+    {
+        return $this->_authService->resetPassword($request);
     }
 }

@@ -117,4 +117,27 @@ class AuthService
         }
 
     }
+
+    public function resetPassword(string $email)
+    {
+        try {
+            $user = User::query()->where('email',$email)->firstOrFail();
+    
+            $newPassword = Hash::make(config('app.DEFAULT_PASS'));
+    
+    
+            $user->update([
+                'password' => $newPassword
+            ]);
+            
+            return $this->successResponse(
+                data: [
+                    'password' => config('app.DEFAULT_PASS')
+                ],
+                message: 'Password Reset Success'
+            );
+        } catch (\Exception $exception) {
+            return $this->errorResponse($exception);
+        }
+    }
 }

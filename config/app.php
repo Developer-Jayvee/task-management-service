@@ -123,6 +123,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'CLIENT_APP_URL' => env('CLIENT_APP_URL','http://localhost:5173/register')
+    'CLIENT_APP_URL' => env('CLIENT_APP_URL','http://localhost:5173/register'),
+    'DEFAULT_PASS' => env('DEFAULT_PASSWORD_TEXT','password')
 
 ];
