@@ -17,7 +17,7 @@ Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
         Route::middleware('login.verify')->group(function() {
             Route::get('logout', [AuthController::class, 'signOut'])->name('signOut');
             Route::post('user/reset-password',[AuthController::class, 'resetPassword'])->name('reset.password');
-            Route::get('reset-password',[AuthController::class, 'resetPasswordLink']);
+            Route::post('reset-password',[AuthController::class, 'resetPasswordLink']);
         });
     });
 

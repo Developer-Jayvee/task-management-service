@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\SignInRequest;
 use App\Http\Requests\SignUpRequest;
 use App\Http\Requests\UpdateResetPasswordRequest;
@@ -46,11 +47,8 @@ class AuthController extends Controller
         );
     }
 
-    public function resetPasswordLink(Request $request)
+    public function resetPasswordLink(ResetPasswordRequest $request)
     {
-         return $this->_authService->resetPasswordLink(
-            token: $request->query('token'),
-            email: $request->query('email')
-        );
+         return $this->_authService->resetPasswordLink($request);
     }
 }

@@ -136,16 +136,13 @@ class AuthService
         }
     }
 
-    public function resetPasswordLink(string $token, string $email)
+    public function resetPasswordLink(Request $request)
     {
         try {
             $status = Password::reset(
-                [
-                    'token' => $token,
-                    'email' => $email,
-                    'password' => 'password123',
-                    'password_confirmation' => 'password123'
-                ],
+                $request->only([
+                    'token','email','password','password_confirmation'
+                ]),
                 function (User $user, string $password) {
                     $user->forceFill([
                         'password' => Hash::make($password),

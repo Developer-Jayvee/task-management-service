@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // CUSTOMIZE THE RESET URL INSTEAD USING THE BUILT IN DEFAULT URL
         ResetPassword::createUrlUsing( function (User $user , string $token) {
-            return config('app.url').'/api/v1/auth/reset-password?token='. urlencode($token). '&email='. urlencode($user->email);
+            return config('app.CLIENT_APP_URL').'/reset-password?token='. urlencode($token). '&email='. urlencode($user->email);
         });
     }
 }
