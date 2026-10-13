@@ -27,7 +27,7 @@ class RolesAndPermissions extends Seeder
             'ticket update-status',
             'ticket delete',
         ] as $name) {
-            $permissions[$name] = Permission::create([
+            $permissions[$name] = Permission::query()->firstOrCreate([
                 'name' => $name,
                 'guard_name' => 'api',
             ]);

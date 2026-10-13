@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Notifications\ResetPasswordMail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -10,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Override;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password','is_active'])]
@@ -35,6 +38,11 @@ class User extends Authenticatable
         ];
     }
 
+    #[Override]
+    public function sendPasswordResetNotification($token)
+    {
+        return $this->notify(new ResetPasswordMail($token));
+    }
     public function member()
     {
         return $this->hasOne(Member::class, 'user_id', 'id');

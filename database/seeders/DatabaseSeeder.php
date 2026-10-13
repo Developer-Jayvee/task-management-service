@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         $this->call([
-            RolesAndPermissions::class
+            RolesAndPermissions::class,
+            ResetPasswordPermission::class
         ]);
         User::factory()->create([
             'name' => 'Test User',

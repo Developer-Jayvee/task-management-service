@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SignInRequest;
 use App\Http\Requests\SignUpRequest;
 use App\Http\Requests\UpdateResetPasswordRequest;
+use App\Models\User;
 use App\Services\Auth\AuthService;
 use Illuminate\Http\Request;
 
@@ -38,6 +39,18 @@ class AuthController extends Controller
 
     public function resetPassword(UpdateResetPasswordRequest $request) 
     {
-        return $this->_authService->resetPassword($request);
+        $this->authorize('resetPassword',$request->user());
+
+        return $this->_authService->resetPassword(
+            email: $request->input('email')
+        );
+    }
+
+    public function resetPasswordLink(Request $request)
+    {
+         return $this->_authService->resetPasswordLink(
+            token: $request->query('token'),
+            email: $request->query('email')
+        );
     }
 }

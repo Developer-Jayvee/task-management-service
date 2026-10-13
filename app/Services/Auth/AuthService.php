@@ -11,6 +11,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\UnauthorizedException;
 
@@ -24,7 +25,7 @@ class AuthService
             $user = User::query()->where('email', $email)->with('member.tenant')->firstOrFail();
 
             if (! $user->is_active) {
-                throw new AuthorizationException('User account is currently deactivated. Please contact your admin for further assistance.',403);
+                throw new AuthorizationException('User account is currently deactivated. Please contact your admin for further assistance.', 403);
             }
             if (! $user?->getTenant()?->slug) {
                 throw new UnauthorizedException('Failed to login. Please contact your admin for assistance.', 401);
@@ -121,20 +122,42 @@ class AuthService
     public function resetPassword(string $email)
     {
         try {
-            $user = User::query()->where('email',$email)->firstOrFail();
-    
-            $newPassword = Hash::make(config('app.DEFAULT_PASS'));
-    
-    
-            $user->update([
-                'password' => $newPassword
+            $user = User::query()->where('email', $email)->firstOrFail();
+
+            $status = Password::sendResetLink([
+                'email' => $user->email,
             ]);
-            
+
             return $this->successResponse(
-                data: [
-                    'password' => config('app.DEFAULT_PASS')
+                message: 'Email link is sent to user'
+            );
+        } catch (\Exception $exception) {
+            return $this->errorResponse($exception);
+        }
+    }
+
+    public function resetPasswordLink(string $token, string $email)
+    {
+        try {
+            $status = Password::reset(
+                [
+                    'token' => $token,
+                    'email' => $email,
+                    'password' => 'password123',
+                    'password_confirmation' => 'password123'
                 ],
-                message: 'Password Reset Success'
+                function (User $user, string $password) {
+                    $user->forceFill([
+                        'password' => Hash::make($password),
+                    ])->setRememberToken(Str::random(60));
+    
+                    $user->save();
+    
+                }
+            );
+    
+            return $this->successResponse(
+                data: $status
             );
         } catch (\Exception $exception) {
             return $this->errorResponse($exception);

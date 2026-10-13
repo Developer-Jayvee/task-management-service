@@ -66,7 +66,7 @@ class InvitationLinkService
             ];
 
             $link = Crypt::encrypt($payload);
-            $formatted = config('app.CLIENT_APP_URL')."?link=$link";
+            $formatted = config('app.CLIENT_APP_URL')."/register?link=$link";
             InvitationLink::create([
                 'code' => $code,
                 'user_id' => request()->user()->id,
