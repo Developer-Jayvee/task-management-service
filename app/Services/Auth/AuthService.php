@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\UnauthorizedException;
+use Illuminate\Validation\ValidationException;
 
 class AuthService
 {
@@ -141,18 +142,18 @@ class AuthService
         try {
             $status = Password::reset(
                 $request->only([
-                    'token','email','password','password_confirmation'
+                    'token', 'email', 'password', 'password_confirmation',
                 ]),
                 function (User $user, string $password) {
                     $user->forceFill([
                         'password' => Hash::make($password),
                     ])->setRememberToken(Str::random(60));
-    
+
                     $user->save();
-    
+
                 }
             );
-    
+
             return $this->successResponse(
                 data: $status
             );
