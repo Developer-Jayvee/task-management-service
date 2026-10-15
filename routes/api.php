@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\InvitationLinkController;
 use App\Http\Controllers\PermissionDetailsController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\RolesController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -48,6 +49,11 @@ Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
                 Route::post('update','update');
             });
 
+        Route::controller(RolesController::class)
+            ->prefix('role')
+            ->group(function () {
+                Route::get('/','index');
+            });
     });
 
     Route::get('/identity-check', function (Request $request) {
