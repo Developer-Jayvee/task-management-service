@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdatePermissionRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\PermissionDetailsService;
 class PermissionDetailsController extends Controller
@@ -23,6 +24,8 @@ class PermissionDetailsController extends Controller
 
     public function update(UpdatePermissionRequest $request)
     {
+        $this->authorize('updatePermission',User::class);
+        
         return $this->_service->updateRolePermission(
             permissions: $request->input('permission_ids'),
             role:$request->input('role'),

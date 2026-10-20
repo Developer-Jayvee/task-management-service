@@ -24,6 +24,7 @@ class UserController extends Controller
 
     public function toggleStatus(User $userId,string $status) 
     {
+        $this->authorize('deactivateUser',User::class);
         return $this->_userService->toggleStatus(
             user: $userId,
             status: $status
