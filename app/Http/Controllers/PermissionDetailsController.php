@@ -12,6 +12,10 @@ class PermissionDetailsController extends Controller
     ){}
     public function index(Request $request)
     {
+        $request->validate([
+            'role' => ['required','in:member,owner']
+        ]);
+        
         return $this->_service->viewPermissions(
             role: $request->query('role','member')
         );

@@ -19,7 +19,6 @@ class PermissionDetailsService
             $permission = PermissionDetails::query()->get()
                 ->map(function ($data) use ($role) {
                     $role = Role::findByName($role,'api');
-                    dd($role);
                     $roleHasPermission = DB::table('role_has_permissions', 'rhp')
                         ->where([
                             'permission_id' => $data->permission_id,
@@ -48,7 +47,7 @@ class PermissionDetailsService
             $role = Role::findByName($role,'api');
             foreach ($permissions as $id) {
                 $perm = Permission::findById($id,'api');
-                if($perm) {
+                if($perm && !$role->hasPermissionTo($perm)) {
                     $role->givePermissionTo($perm);
                 }
             }
