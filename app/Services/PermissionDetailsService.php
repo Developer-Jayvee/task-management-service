@@ -58,4 +58,5 @@ class PermissionDetailsService
             return $this->errorResponse($exception);
         }
     }
+
 }

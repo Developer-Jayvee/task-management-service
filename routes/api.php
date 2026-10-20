@@ -53,6 +53,8 @@ Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
             ->prefix('role')
             ->group(function () {
                 Route::get('/','index');
+                Route::delete('{roleId}/delete','destroy');
+
             });
     });
 
