@@ -1,159 +1,116 @@
 # Task Management Multi-Tenant Backend
 
-This is the Laravel backend for a multi-tenant task management system. The application is designed to support multiple organizations (tenants) with isolated data, project-based task tracking, and secure access through authenticated API routes.
+This repository contains the Laravel API backend for a multi-tenant task management application. The project is built around tenant-scoped data access, role-based permissions, project management, and ticket tracking for users working inside isolated workspaces.
 
 ## Overview
 
-The backend provides the core API for:
+The backend is designed to support:
 
-- Multi-tenant workspaces
-- User authentication and registration
-- Tenant membership management
-- Project creation and management
-- Ticket/task management
-- Ticket status updates
-- Invitation link verification for tenant onboarding
-- Role-based access control using Spatie Permission
+- Multiple tenants (organizations/workspaces)
+- User authentication and account management
+- Tenant membership and invitation-based onboarding
+- Project creation and tenant-scoped project access
+- Ticket creation, assignment, updates, and status tracking
+- Role and permission management for project and ticket operations
+- API-first usage for a frontend or admin dashboard
 
 ## Tech Stack
 
 - PHP 8.3
 - Laravel 13
-- Laravel Sanctum for API authentication
-- Spatie Laravel Permission for authorization
-- MySQL / SQLite compatible Laravel database setup
+- Laravel Sanctum
+- Spatie Laravel Permission
+- MySQL / SQLite / Laravel-supported DBs
 - REST API architecture
 
-## Core Features
+## Core Domain Model
 
-### Multi-tenant Architecture
+The app uses a tenant-first data model:
 
-Each user belongs to a tenant and can access data scoped to that tenant. Tenants are identified by a slug and a name, and membership is tracked through the `member` table.
+- User: authenticates through Sanctum and belongs to a tenant via membership
+- Tenant: represents a company or workspace
+- Member: links users to tenants
+- Project: belongs to a tenant and can contain many tickets
+- Ticket: belongs to a project and a tenant, with assignee, creator, status, and priority
+- InvitationLink: used for tenant invite verification/onboarding
 
-### Authentication
+## Key Project Features
 
-The API supports:
+### Authentication and user lifecycle
 
 - User registration
 - User login
-- Logout
-- Protected routes with Sanctum middleware
+- Logout via protected middleware
+- Password reset link request and verification
+- Account activation/deactivation through user status toggling
 
-### Tenant Onboarding
+### Multi-tenant access control
 
-The project includes invitation-based flow support:
+- Tenant-specific data scoping
+- Membership-based access to resources
+- Identity check endpoint to confirm the active tenant and account state
+- Permission enforcement for project and ticket resources
 
-- Generate invitation link
-- Verify invitation link
-- Accept invites for tenant membership
+### Project management
 
-### Project Management
-
-Users can:
-
-- Create projects
-- View a list of projects
-- Fetch a single project
-- Update project details
+- List all accessible projects
+- Create projects within the active tenant
+- View project details
+- Update existing projects
 - Delete projects
+- Fetch project tickets by status
 
-### Ticket Management
+### Ticket management
 
-Each ticket contains:
+- List tickets
+- Create new tickets
+- View ticket details
+- Update ticket metadata
+- Delete tickets
+- Change ticket status via a dedicated endpoint
+- Set assignee and priority values
 
-- Title
-- Description
-- Status
-- Priority
-- Assignee
-- Due date
-- Creator
-- Tenant association
+### Roles and permissions
 
-Supported statuses:
+- Role listing and role removal endpoints
+- Permission listing and update endpoints
+- Spatie permission integration for access control
 
-- to-do
-- in-progress
-- completed
-
-Supported priorities:
-
-- low
-- medium
-- high
-
-## Project Structure
+## Repository Structure
 
 ```bash
 app/
   Enums/
   Http/
+    Controllers/
+    Requests/
+    Resources/
   Models/
   Policies/
   Providers/
   Services/
   Traits/
+bootstrap/
 config/
 database/
+  factories/
   migrations/
   seeders/
+public/
 routes/
   api.php
+storage/
 tests/
 ```
 
-## Main API Routes
+## Prerequisites
 
-Base URL:
+Before running the app, make sure you have:
 
-```bash
-/api/v1
-```
-
-### Authentication
-
-```bash
-POST /api/v1/auth/register
-POST /api/v1/auth/login
-GET  /api/v1/auth/logout
-GET  /api/v1/auth/link/verify
-```
-
-### Invitations
-
-```bash
-GET /api/v1/link/generate
-```
-
-### Projects
-
-```bash
-GET    /api/v1/project
-POST   /api/v1/project
-GET    /api/v1/project/{project}
-PUT    /api/v1/project/{project}
-DELETE /api/v1/project/{project}
-```
-
-### Tickets
-
-```bash
-GET    /api/v1/ticket
-POST   /api/v1/ticket
-GET    /api/v1/ticket/{ticket}1
-PUT    /api/v1/ticket/{ticket}
-DELETE /api/v1/ticket/{ticket}
-PATCH  /api/v1/ticket-status/{ticket}
-```
-
-## Roles and Permissions
-
-The application uses role-based permissions for project and ticket access, including:
-
-- Owner
-- Member
-
-Permissions are managed with Spatie Permission and are applied to project and ticket operations.
+- PHP 8.3+
+- Composer
+- A supported database (MySQL, SQLite, or another Laravel-supported driver)
+- Node.js and npm are optional for the frontend asset build, but the project includes Vite config
 
 ## Environment Setup
 
@@ -163,13 +120,13 @@ Permissions are managed with Spatie Permission and are applied to project and ti
 composer install
 ```
 
-2. Create your environment file:
+2. Copy the example environment file:
 
 ```bash
 cp .env.example .env
 ```
 
-3. Generate the application key:
+3. Generate the Laravel app key:
 
 ```bash
 php artisan key:generate
@@ -178,6 +135,12 @@ php artisan key:generate
 4. Configure your database in `.env`:
 
 ```env
+APP_NAME="Task Management"
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost
+
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
@@ -192,7 +155,7 @@ DB_PASSWORD=
 php artisan migrate
 ```
 
-6. Optionally seed roles and permissions:
+6. Optional: seed the database if roles or default fixtures are required:
 
 ```bash
 php artisan db:seed
@@ -206,25 +169,85 @@ Start the Laravel development server:
 php artisan serve
 ```
 
-The API will be available at:
+The API base URL will be:
 
 ```bash
 http://localhost:8000/api/v1
 ```
 
-## Example Workflow
+## API Routes
 
-1. Register a user using the `/auth/register` endpoint.
-2. Create or join a tenant workspace.
-3. Generate or verify an invitation link for teammates.
-4. Create projects under the tenant.
-5. Add tasks/tickets to projects.
-6. Update ticket status as work progresses.
+All protected routes are guarded by the `login.verify` middleware unless otherwise noted.
 
-## Notes
+### Authentication
 
-This project is actively structured as a backend service for a multi-tenant SaaS workflow and is intended to be consumed by a frontend application or admin dashboard. The current implementation focuses on API-driven operations, tenant isolation, and task management logic.
+```http
+POST /api/v1/auth/register
+POST /api/v1/auth/login
+GET  /api/v1/auth/logout
+POST /api/v1/auth/reset-password
+GET  /api/v1/auth/reset-password
+```
+
+### Tenant invite and identity checks
+
+```http
+GET /api/v1/link/generate
+GET /api/v1/auth/link/verify
+GET /api/v1/identity-check
+```
+
+### Projects
+
+```http
+GET    /api/v1/project
+POST   /api/v1/project
+GET    /api/v1/project/{projectId}/details
+PATCH  /api/v1/project/{projectId}
+PUT    /api/v1/project/{projectId}
+DELETE /api/v1/project/{projectId}
+GET    /api/v1/project/{projectId}/tickets
+```
+
+### Tickets
+
+```http
+GET    /api/v1/ticket
+POST   /api/v1/ticket
+GET    /api/v1/ticket/{ticketId}/details
+PATCH  /api/v1/ticket/{ticketId}
+PUT    /api/v1/ticket/{ticketId}
+DELETE /api/v1/ticket/{ticketId}/delete
+PATCH  /api/v1/ticket/{ticketId}/status
+```
+
+### Users, permissions, and roles
+
+```http
+GET /api/v1/users/list
+GET /api/v1/assignee
+PATCH /api/v1/users/{userId}/{status}
+GET /api/v1/permission/list
+POST /api/v1/permission/update
+GET /api/v1/role
+DELETE /api/v1/role/{roleId}/delete
+```
+
+## Default Behavior and Notes
+
+- Project and ticket resources are scoped by the authenticated user's tenant.
+- Tickets include a `status` field and a `priority` field, with enum-backed values in the app.
+- The app expects users to belong to a tenant before accessing workspace-scoped data.
+- The project is intended to be consumed via a frontend client, mobile client, or admin application using a JSON API.
+
+## Testing
+
+Run the test suite with:
+
+```bash
+php artisan test
+```
 
 ## License
 
-This project is open-source and uses the MIT license, consistent with the default Laravel project setup.
+This project is open-source and follows the MIT license used by the Laravel default project setup.
