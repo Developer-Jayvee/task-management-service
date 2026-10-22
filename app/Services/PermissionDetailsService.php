@@ -45,12 +45,14 @@ class PermissionDetailsService
     {
         try {
             $role = Role::findByName($role,'api');
-            foreach ($permissions as $id) {
+            $permissionArr = [];
+            foreach ($permissions as $key => $id) {
                 $perm = Permission::findById($id,'api');
-                if($perm && !$role->hasPermissionTo($perm)) {
-                    $role->givePermissionTo($perm);
+                if($perm) {
+                    $permissionArr[] = $perm;
                 }
             }
+            $role->syncPermissions($permissionArr);
             return $this->successResponse(
                 message: 'Successfully update permissions'
             );
