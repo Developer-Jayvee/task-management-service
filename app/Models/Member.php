@@ -4,9 +4,11 @@ namespace App\Models;
 
 use App\Enums\Roles;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Notifications\Notifiable;
 class Member extends Model
 {
+    use Notifiable;
+    
     protected $table = 'membership';
 
     protected $fillable = [

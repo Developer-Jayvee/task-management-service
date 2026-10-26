@@ -22,7 +22,6 @@ class TicketUpdateNotification
     public function __construct(
         public Ticket $ticket,
         public User $user,
-        public string $type,
     ){}
 
     /**

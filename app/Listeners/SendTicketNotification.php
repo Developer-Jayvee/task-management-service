@@ -5,9 +5,11 @@ namespace App\Listeners;
 use App\Events\TicketUpdateNotification;
 use App\Jobs\ProcessNotificationJob;
 use App\Models\NotificationEvent;
+use App\Notifications\OwnerTicketNotification;
 use App\Services\NotificationService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Notification;
 
 class SendTicketNotification implements ShouldQueue
 {
@@ -24,16 +26,12 @@ class SendTicketNotification implements ShouldQueue
     public function handle(TicketUpdateNotification $event): void
     {
         $ticket = $event->ticket;
-        $type = $event->type;
         $user = $event->user;
 
-        // if($ticket->status === 'completed') {
-            $data = $this->notifService->createNotif(
-                user: $user,
-                type : $type,
-                data : ['ticket_id' => $ticket->id]
-            );
-            // ProcessNotificationJob::dispatch($data);
-        // }
+        $owner = $user->getTenant()?->owner;
+        Notification::send($owner,new OwnerTicketNotification(
+            $ticket,
+            $user
+        ));
     }
 }

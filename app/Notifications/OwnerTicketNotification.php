@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -15,8 +17,8 @@ class OwnerTicketNotification extends Notification
      * Create a new notification instance.
      */
     public function __construct(
-        public int $ticketId,
-        public string $message
+        public Ticket $ticket,
+        public User $user
     )
     {
         //
@@ -42,8 +44,9 @@ class OwnerTicketNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'ticket_id' => $this->ticketId,
-            'message' => $this->message
+            'type' => 'ticket.completed',
+            'ticket_id' => $this->ticket?->id,
+            'message' => "Ticket {$this->ticket?->id} has been completed."
         ];
     }
 }
