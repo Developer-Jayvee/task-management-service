@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class NotificationEvent extends Model
+{
+    protected $table = 'notification_event';
+
+    protected $fillable = [
+        'tenant_id',
+        'user_id',
+        'type',
+        'status',
+        'data',
+        'idempotency_key',
+        'retry_count',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'data' => 'array',
+        ];
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+}

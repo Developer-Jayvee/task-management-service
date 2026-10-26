@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\TicketUpdateNotification;
 use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
 use App\Models\TicketStatusHistory;
@@ -93,13 +94,18 @@ class TicketService
     {
         try {
             DB::beginTransaction();
-            TicketStatusHistory::query()->create([
-                'ticket_id' => $ticket->id,
-                'status' => $status,
-            ]);
+                TicketStatusHistory::query()->create([
+                    'ticket_id' => $ticket->id,
+                    'status' => $status,
+                ]);
 
-            $ticket->update(['status' => $status]);
-
+                $ticket->update(['status' => $status]);
+            
+                TicketUpdateNotification::dispatch(
+                    $ticket->fresh(),
+                    request()->user(),
+                    "ticket:completed;receiver:owner",
+                );
             DB::commit();
 
             return $this->successResponse([
@@ -112,4 +118,5 @@ class TicketService
             return $this->errorResponse($exception);
         }
     }
+
 }

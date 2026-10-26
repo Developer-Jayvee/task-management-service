@@ -34,9 +34,8 @@ class Ticket extends Model
     #[Override]
     public static function booted()
     {
-        // parent::boot();
-        static::creating(function ($model) {
-            $user = request()->user();
+        $user = request()->user();
+        static::creating(function ($model) use($user){
             $model->created_by = $user->id;
             $model->tenant_id = $user?->getTenant()->id;
         });
