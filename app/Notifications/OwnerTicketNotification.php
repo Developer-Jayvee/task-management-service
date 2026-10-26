@@ -6,10 +6,11 @@ use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class OwnerTicketNotification extends Notification
+class OwnerTicketNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -31,7 +32,7 @@ class OwnerTicketNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database','broadcast'];
     }
 
   
@@ -48,5 +49,12 @@ class OwnerTicketNotification extends Notification
             'ticket_id' => $this->ticket?->id,
             'message' => "Ticket {$this->ticket?->id} has been completed."
         ];
+    }
+
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage(
+            $this->toArray($notifiable)
+        );
     }
 }
