@@ -27,7 +27,7 @@ class LoginVerify
                 code: 401
             );
         }
-
+        
         $accessToken = PersonalAccessToken::findToken($token);
 
         if (! $accessToken) {
@@ -42,7 +42,6 @@ class LoginVerify
         $user->withAccessToken($accessToken);
 
         Auth::setUser($user);
-
         return $next($request);
     }
 }

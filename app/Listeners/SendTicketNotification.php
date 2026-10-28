@@ -28,7 +28,7 @@ class SendTicketNotification implements ShouldQueue
         $ticket = $event->ticket;
         $user = $event->user;
 
-        $owner = $user->getTenant()?->owner;
+        $owner = $user->getTenant()?->owner->user;
         Notification::send($owner,new OwnerTicketNotification(
             $ticket,
             $user
