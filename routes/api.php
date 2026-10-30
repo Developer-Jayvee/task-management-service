@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\InvitationLinkController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PermissionDetailsController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RolesController;
@@ -26,6 +27,12 @@ Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
 
     Route::middleware('login.verify')->group(function () {
         Route::get('link/generate', [InvitationLinkController::class, 'generate'])->name('generate.link');
+
+        Route::get('notifications',[NotificationController::class,'get']);
+        Route::put('notifications/{notifId}/read',[NotificationController::class, 'update']);
+        Route::delete('notifications/{notifId}/read',[NotificationController::class, 'destroy']);
+        Route::patch('notifications/bulk-read',[NotificationController::class,'bulkRead']);
+        Route::delete('notifications/bulk-delete',[NotificationController::class,'bulkDestroy']);
 
         Route::apiResource('project', ProjectController::class)->except(['show']);
         Route::get('project/{projectId}/details', [ProjectController::class, 'show']);

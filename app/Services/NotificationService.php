@@ -4,9 +4,13 @@ namespace App\Services;
 
 use App\Models\NotificationEvent;
 use App\Models\User;
+use App\Traits\ResponseTrait;
+use Illuminate\Validation\UnauthorizedException;
 
 class NotificationService
 {
+    use ResponseTrait;
+
     const PENDING = 'pending';
 
     const PROCESSING = 'processing';
@@ -65,5 +69,79 @@ class NotificationService
         return $this->notif->update([
             'status' => self::COMPLETED,
         ]);
+    }
+
+    public function userNotifications()
+    {
+        try {
+            if (! request()->user()) {
+                throw new UnauthorizedException('Unauthenticated');
+            }
+
+            $notifications = request()->user()->notifications()
+                ->orderByDesc('created_at')->get();
+
+            return $this->successResponse(
+                data: collect($notifications)->map(function ($data) {
+                    return [
+                        'data' => $data['data'],
+                        'is_read' => $data['read_at'] !== null,
+                    ];
+                })
+            );
+        } catch (\Exception $ex) {
+            return $this->errorResponse($ex);
+        }
+
+    }
+
+    public function setUnreadNotification(int $notifId)
+    {
+        try {
+            $notification = request()->user()->notifications()->whereNull('read_at')->findOrFail($notifId);
+            $notification->markAsRead();
+
+            return $this->successResponse();
+        } catch (\Exception $ex) {
+            return $this->errorResponse($ex);
+        }
+    }
+
+    public function deleteNotification(int $notifId)
+    {
+        try {
+            $notification = request()->user()->notifications()->findOrFail($notifId);
+            $notification->delete();
+
+            return $this->successResponse();
+        } catch (\Exception $ex) {
+            return $this->errorResponse($ex);
+        }
+    }
+
+    public function bulkReadNotification(array $notifIds)
+    {
+        try {
+            $notification = request()->user()->notifications()
+                ->whereIn('id', $notifIds)
+                ->update(['read_at' => now()]);
+            $notification->delete();
+            return $this->successResponse();
+        } catch (\Exception $ex) {
+            return $this->errorResponse($ex);
+        }
+    }
+
+     public function bulkDeleteNotification(array $notifIds)
+    {
+        try {
+            $notification = request()->user()->notifications()
+                ->whereIn('id', $notifIds)
+                ->delete();
+            $notification->delete();
+            return $this->successResponse();
+        } catch (\Exception $ex) {
+            return $this->errorResponse($ex);
+        }
     }
 }
