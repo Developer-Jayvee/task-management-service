@@ -33,6 +33,7 @@ Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
             Route::delete('{notifId}/read',[NotificationController::class, 'destroy']);
             Route::patch('bulk-read',[NotificationController::class,'bulkRead']);
             Route::delete('bulk-delete',[NotificationController::class,'bulkDestroy']);
+            Route::get('count',[NotificationController::class, 'notifCount']);
         });
         Route::get('notifications',[NotificationController::class,'get']);
 

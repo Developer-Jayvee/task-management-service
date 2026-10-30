@@ -45,8 +45,8 @@ class OwnerTicketNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
+            'id' => $this->ticket?->id,
             'type' => 'ticket.completed',
-            'ticket_id' => $this->ticket?->id,
             'message' => "Ticket {$this->ticket?->id} has been completed."
         ];
     }

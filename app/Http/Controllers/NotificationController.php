@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
-
     public function __construct(
         protected readonly NotificationService $notifService
     ) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -40,17 +40,22 @@ class NotificationController extends Controller
         );
     }
 
-    public function bulkRead(UpdateBulkReadReqest $request) 
+    public function bulkRead(UpdateBulkReadReqest $request)
     {
         return $this->notifService->bulkReadNotification(
             notifIds: $request->validated('notifIds')
         );
     }
-    
-    public function bulkDestroy(UpdateBulkReadReqest $request) 
+
+    public function bulkDestroy(UpdateBulkReadReqest $request)
     {
         return $this->notifService->bulkDeleteNotification(
             notifIds: $request->validated('notifIds')
         );
+    }
+
+    public function notifCount()
+    {
+        return $this->notifService->notifCount();
     }
 }

@@ -126,20 +126,44 @@ class NotificationService
                 ->whereIn('id', $notifIds)
                 ->update(['read_at' => now()]);
             $notification->delete();
+
             return $this->successResponse();
         } catch (\Exception $ex) {
             return $this->errorResponse($ex);
         }
     }
 
-     public function bulkDeleteNotification(array $notifIds)
+    public function bulkDeleteNotification(array $notifIds)
     {
         try {
             $notification = request()->user()->notifications()
                 ->whereIn('id', $notifIds)
                 ->delete();
             $notification->delete();
+
             return $this->successResponse();
+        } catch (\Exception $ex) {
+            return $this->errorResponse($ex);
+        }
+    }
+
+    public function notifCount()
+    {
+        try {
+            if (! request()->user()) {
+                throw new UnauthorizedException('Unauthenticated');
+            }
+
+            $notifications = request()->user()->notifications();
+            $unreadCount = $notifications->whereNull('read_at')->count();
+            $readCount = $notifications->whereNotNull('read_at')->count();
+
+            return $this->successResponse(
+                data: [
+                    'read' => $readCount,
+                    'unread' => $unreadCount
+                ]
+            );
         } catch (\Exception $ex) {
             return $this->errorResponse($ex);
         }
