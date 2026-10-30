@@ -28,11 +28,13 @@ Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
     Route::middleware('login.verify')->group(function () {
         Route::get('link/generate', [InvitationLinkController::class, 'generate'])->name('generate.link');
 
+        Route::prefix('notification')->group( function () {
+            Route::put('{notifId}/read',[NotificationController::class, 'update']);
+            Route::delete('{notifId}/read',[NotificationController::class, 'destroy']);
+            Route::patch('bulk-read',[NotificationController::class,'bulkRead']);
+            Route::delete('bulk-delete',[NotificationController::class,'bulkDestroy']);
+        });
         Route::get('notifications',[NotificationController::class,'get']);
-        Route::put('notifications/{notifId}/read',[NotificationController::class, 'update']);
-        Route::delete('notifications/{notifId}/read',[NotificationController::class, 'destroy']);
-        Route::patch('notifications/bulk-read',[NotificationController::class,'bulkRead']);
-        Route::delete('notifications/bulk-delete',[NotificationController::class,'bulkDestroy']);
 
         Route::apiResource('project', ProjectController::class)->except(['show']);
         Route::get('project/{projectId}/details', [ProjectController::class, 'show']);
