@@ -125,7 +125,6 @@ class NotificationService
             $notification = request()->user()->notifications()
                 ->whereIn('id', $notifIds)
                 ->update(['read_at' => now()]);
-            $notification->delete();
 
             return $this->successResponse();
         } catch (\Exception $ex) {

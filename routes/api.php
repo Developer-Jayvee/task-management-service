@@ -35,7 +35,7 @@ Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
             Route::delete('bulk-delete',[NotificationController::class,'bulkDestroy']);
             Route::get('count',[NotificationController::class, 'notifCount']);
         });
-        Route::get('notifications',[NotificationController::class,'get']);
+        Route::get('notification',[NotificationController::class,'index']);
 
         Route::apiResource('project', ProjectController::class)->except(['show']);
         Route::get('project/{projectId}/details', [ProjectController::class, 'show']);
