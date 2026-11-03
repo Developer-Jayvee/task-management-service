@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\NotificationEvent;
 use App\Models\User;
 use App\Traits\ResponseTrait;
+use Carbon\Carbon;
 use Illuminate\Validation\UnauthorizedException;
 
 class NotificationService
@@ -83,7 +84,8 @@ class NotificationService
 
             return $this->successResponse(
                 data: collect($notifications)->map(function ($data) {
-                    $data = array_merge($data['data'],['is_read' => $data['read_at']]);
+                    $date = Carbon::parse($data['created_at']);
+                    $data = array_merge($data['data'],['is_read' => $data['read_at'],'created_at' => $date->diffForHumans()]);
                     return $data;
                 })
             );
