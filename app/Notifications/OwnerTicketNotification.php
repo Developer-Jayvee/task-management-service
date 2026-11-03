@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\Ticket;
 use App\Models\User;
+use App\Traits\NotificationFormatTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notification;
 
 class OwnerTicketNotification extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable,NotificationFormatTrait;
 
     /**
      * Create a new notification instance.
@@ -44,11 +45,12 @@ class OwnerTicketNotification extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
-        return [
-            'id' => $this->ticket?->id,
-            'type' => 'ticket.completed',
-            'message' => "Ticket {$this->ticket?->id} has been completed."
-        ];
+        return $this->notificationFormat(
+            id: $this->ticket?->id,
+            title: 'Ticket completed',
+            message: "Ticekt# {$this->ticket?->id} is completed",
+            type : "ticket.completed"
+        );
     }
 
     public function toBroadcast(object $notifiable): BroadcastMessage

@@ -83,10 +83,8 @@ class NotificationService
 
             return $this->successResponse(
                 data: collect($notifications)->map(function ($data) {
-                    return [
-                        'data' => $data['data'],
-                        'is_read' => $data['read_at'] !== null,
-                    ];
+                    $data = array_merge($data['data'],['is_read' => $data['read_at']]);
+                    return $data;
                 })
             );
         } catch (\Exception $ex) {
