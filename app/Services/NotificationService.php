@@ -72,7 +72,7 @@ class NotificationService
         ]);
     }
 
-    public function userNotifications()
+    public function userNotifications(int $perPage = 5)
     {
         try {
             if (! request()->user()) {
@@ -80,15 +80,13 @@ class NotificationService
             }
 
             $notifications = request()->user()->notifications()
-                ->orderByDesc('created_at')->get();
-
-            return $this->successResponse(
-                data: collect($notifications)->map(function ($data) {
-                    $date = Carbon::parse($data['created_at']);
-                    $data = array_merge($data['data'],['is_read' => $data['read_at'],'created_at' => $date->diffForHumans()]);
+                ->orderByDesc('created_at')
+                ->paginate(perPage : $perPage, page : 1)
+                ->through(function ($notification) {
+                    $data = array_merge( $notification->data,['is_read' => $notification->read_at !== null]);
                     return $data;
-                })
-            );
+                });
+            return $notifications;
         } catch (\Exception $ex) {
             return $this->errorResponse($ex);
         }

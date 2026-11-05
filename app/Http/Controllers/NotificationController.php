@@ -15,9 +15,15 @@ class NotificationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->notifService->userNotifications();
+        $validated = $request->validate([
+            'perPage' => ['sometimes','numeric','min:1']
+        ]);
+
+        return $this->notifService->userNotifications(
+            perPage: $validated['perPage'] ?? 5
+        );
     }
 
     /**
