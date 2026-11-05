@@ -117,11 +117,10 @@ class NotificationService
         }
     }
 
-    public function bulkReadNotification(array $notifIds)
+    public function bulkReadNotification()
     {
         try {
             $notification = request()->user()->notifications()
-                ->whereIn('id', $notifIds)
                 ->update(['read_at' => now()]);
 
             return $this->successResponse();

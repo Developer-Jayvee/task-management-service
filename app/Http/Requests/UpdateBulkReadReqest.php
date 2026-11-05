@@ -12,7 +12,7 @@ class UpdateBulkReadReqest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,8 @@ class UpdateBulkReadReqest extends FormRequest
     public function rules(): array
     {
         return [
-            'notifIds' => ['required','array','min:1'],
-            'notifIds.*' => ['required','integer','distinct']
+            // 'notifIds' => ['required','array','min:1'],
+            // 'notifIds.*' => ['required','integer','distinct']
         ];
     }
 }

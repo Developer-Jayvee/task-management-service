@@ -48,9 +48,7 @@ class NotificationController extends Controller
 
     public function bulkRead(UpdateBulkReadReqest $request)
     {
-        return $this->notifService->bulkReadNotification(
-            notifIds: $request->validated('notifIds')
-        );
+        return $this->notifService->bulkReadNotification();
     }
 
     public function bulkDestroy(UpdateBulkReadReqest $request)
