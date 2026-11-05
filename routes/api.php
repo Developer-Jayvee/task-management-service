@@ -31,6 +31,7 @@ Route::prefix('v1')
     Route::middleware('login.verify')->group(function () {
         Route::get('link/generate', [InvitationLinkController::class, 'generate'])->name('generate.link');
 
+        # Notification
         Route::prefix('notification')->group( function () {
             Route::put('{notifId}/read',[NotificationController::class, 'update']);
             Route::delete('{notifId}/read',[NotificationController::class, 'destroy']);
@@ -40,21 +41,25 @@ Route::prefix('v1')
         });
         Route::get('notification',[NotificationController::class,'index']);
 
+        # Project
         Route::apiResource('project', ProjectController::class)->except(['show']);
         Route::get('project/{projectId}/details', [ProjectController::class, 'show']);
-
         Route::get('project/{projectId}/tickets', [ProjectController::class, 'getProjectTickets']);
+        
+        # Ticket
         Route::apiResource('ticket', TicketController::class)->except(['show', 'destroy']);
         Route::get('ticket/{ticketId}/details', [TicketController::class, 'show']);
         Route::patch('ticket/{ticketId}/status', [TicketController::class, 'updateStatus']);
         Route::delete('ticket/{ticketId}/delete', [TicketController::class, 'destroy']);
 
+        # User Management
         Route::controller(UserController::class)->group(function () {
             Route::get('users/list', 'index');
             Route::get('assignee', 'getAssignees');
             Route::patch('users/{userId}/{status}', 'toggleStatus')->whereIn('status', ['activate', 'deactivate']);
         });
 
+        # Permissions
         Route::controller(PermissionDetailsController::class)
             ->prefix('permission')
             ->group(function () {
@@ -62,6 +67,7 @@ Route::prefix('v1')
                 Route::post('update','update');
             });
 
+        # Roles
         Route::controller(RolesController::class)
             ->prefix('role')
             ->group(function () {
@@ -69,6 +75,8 @@ Route::prefix('v1')
                 Route::delete('{roleId}/delete','destroy');
 
             });
+        
+        # Comments
         Route::controller(CommentController::class)
             ->prefix('comment')
             ->group(function() {
