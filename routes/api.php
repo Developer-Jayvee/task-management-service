@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\InvitationLinkController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PermissionDetailsController;
 use App\Http\Controllers\ProjectController;
@@ -67,6 +68,16 @@ Route::prefix('v1')
                 Route::get('/','index');
                 Route::delete('{roleId}/delete','destroy');
 
+            });
+        Route::controller(CommentController::class)
+            ->prefix('comment')
+            ->group(function() {
+                Route::prefix('{ticketId}')->group(function () {
+                    Route::get('list','index');
+                    Route::post('store','store');
+                });
+
+                Route::patch('{commentId}/update','update');
             });
     });
 

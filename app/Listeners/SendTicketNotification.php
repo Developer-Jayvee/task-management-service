@@ -5,7 +5,7 @@ namespace App\Listeners;
 use App\Events\TicketUpdateNotification;
 use App\Jobs\ProcessNotificationJob;
 use App\Models\NotificationEvent;
-use App\Notifications\OwnerTicketNotification;
+use App\Notifications\OwnerTicketUpdateNotification;
 use App\Services\NotificationService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -29,7 +29,7 @@ class SendTicketNotification implements ShouldQueue
             $user = $event->user;
     
             $owner = $user->getTenant()?->owner->user;
-            Notification::send($owner,new OwnerTicketNotification(
+            Notification::send($owner,new OwnerTicketUpdateNotification(
                 $ticket,
                 $user
             ));

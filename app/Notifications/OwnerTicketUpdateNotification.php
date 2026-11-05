@@ -11,7 +11,7 @@ use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class OwnerTicketNotification extends Notification implements ShouldQueue
+class OwnerTicketUpdateNotification extends Notification implements ShouldQueue
 {
     use Queueable,NotificationFormatTrait;
 
@@ -48,7 +48,7 @@ class OwnerTicketNotification extends Notification implements ShouldQueue
         return $this->notificationFormat(
             id: $this->ticket?->id,
             title: 'Ticket completed',
-            message: "Ticekt# {$this->ticket?->id} is completed",
+            message: "Ticket# {$this->ticket?->id} is complete",
             type : "ticket.completed"
         );
     }
