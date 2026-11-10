@@ -14,3 +14,10 @@ Broadcast::channel(
         return (int) $owner->user_id === $id;
     }
 );
+
+Broadcast::channel(
+    'ticket.{ticketId}',
+    function (User $user , int $id) {
+        return (int) $user->id === $id;
+    }
+);
