@@ -187,7 +187,10 @@ POST /api/v1/auth/login
 GET  /api/v1/auth/logout
 POST /api/v1/auth/reset-password
 GET  /api/v1/auth/reset-password
+POST /api/v1/auth/user/reset-password
 ```
+
+Registration, login, password-reset link requests, password-reset verification, and invitation verification are public. Logout and applying a password reset require authentication.
 
 ### Tenant invite and identity checks
 
@@ -219,6 +222,28 @@ PATCH  /api/v1/ticket/{ticketId}
 PUT    /api/v1/ticket/{ticketId}
 DELETE /api/v1/ticket/{ticketId}/delete
 PATCH  /api/v1/ticket/{ticketId}/status
+PUT    /api/v1/ticket/{ticketId}/re-assign
+```
+
+Ticket updates are available through the resource `PUT` and `PATCH` routes. Status changes and reassignment use dedicated routes.
+
+### Comments
+
+```http
+GET   /api/v1/comment/{ticketId}/list
+POST  /api/v1/comment/{ticketId}/store
+PATCH /api/v1/comment/{commentId}/update
+```
+
+### Notifications
+
+```http
+GET    /api/v1/notification
+GET    /api/v1/notification/count
+PUT    /api/v1/notification/{notifId}/read
+DELETE /api/v1/notification/{notifId}/read
+PATCH  /api/v1/notification/bulk-read
+DELETE /api/v1/notification/bulk-delete
 ```
 
 ### Users, permissions, and roles
@@ -232,6 +257,14 @@ POST /api/v1/permission/update
 GET /api/v1/role
 DELETE /api/v1/role/{roleId}/delete
 ```
+
+### Identity check
+
+```http
+GET /api/v1/identity-check
+```
+
+This authenticated endpoint verifies that the user has an active account and tenant, and returns the user and tenant slug.
 
 ## Default Behavior and Notes
 
