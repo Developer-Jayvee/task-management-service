@@ -25,17 +25,17 @@ class CommentService
     public function storeComment(Ticket $ticket, string $content)
     {
         try {
-            
-            $store = $ticket->comments()->create([
-                'content' => $content,
+            $store = Comment::query()->create([
+                'ticket_id' => $ticket->id,
+                'content' => $content
             ]);
-
-            TicketCommentEvent::dispatch($store, request()->user());
+            TicketCommentEvent::dispatch($ticket->fresh(), request()->user());
 
             return $this->successResponse(
                 data: $store
             );
         } catch (\Exception $ex) {
+            dd($ex);
             return $this->errorResponse($ex);
         }
     }

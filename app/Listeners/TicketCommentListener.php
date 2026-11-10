@@ -3,8 +3,10 @@
 namespace App\Listeners;
 
 use App\Events\TicketCommentEvent;
+use App\Notifications\TicketCommentNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Notification;
 use Laravel\Reverb\Loggers\Log;
 
 class TicketCommentListener implements ShouldQueue
@@ -25,7 +27,12 @@ class TicketCommentListener implements ShouldQueue
         try {
             $ticket = $event->ticket;
             $user = $event->user;
-
+            $owner = $user->getTenant()?->owner->user;
+            
+            Notification::send($owner, new TicketCommentNotification(
+                $ticket,
+                $user
+            ));
         } catch (\Throwable $th) {
             Log::warning('Error in listener',[
                 'error' => $th->getTrace(),
