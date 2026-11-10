@@ -51,6 +51,7 @@ Route::prefix('v1')
         Route::get('ticket/{ticketId}/details', [TicketController::class, 'show']);
         Route::patch('ticket/{ticketId}/status', [TicketController::class, 'updateStatus']);
         Route::delete('ticket/{ticketId}/delete', [TicketController::class, 'destroy']);
+        Route::put('ticket/{ticketId}/re-assign',[TicketController::class, 'reassignTicket']);
 
         # User Management
         Route::controller(UserController::class)->group(function () {

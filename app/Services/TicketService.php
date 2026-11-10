@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Events\TicketAssigneeEvent;
 use App\Events\TicketUpdateNotification;
 use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
 use App\Models\TicketStatusHistory;
+use App\Models\User;
 use App\Traits\ResponseTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -115,6 +117,25 @@ class TicketService
             DB::rollBack();
 
             return $this->errorResponse($exception);
+        }
+    }
+
+    public function reassign(Ticket $ticket, User $assignee)
+    {
+        try {
+            if ($assignee->id === $ticket->assignee_id) {
+                return $this->successResponse(message: 'User is already assigned');
+            }
+
+            $data = $ticket->update([
+                'assignee_id' => $assignee->id,
+            ]);
+
+            TicketAssigneeEvent::dispatch($data, request()->user());
+
+            return $this->successResponse(data: $data);
+        } catch (\Exception $ex) {
+            return $this->errorResponse($ex);
         }
     }
 }

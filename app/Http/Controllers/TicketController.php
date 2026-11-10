@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTicketRequest;
+use App\Http\Requests\UpdateTicketAssigneeRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Requests\UpdateTicketStatusRequest;
 use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
+use App\Models\User;
 use App\Services\TicketService;
 use Illuminate\Http\Request;
 
@@ -44,7 +46,7 @@ class TicketController extends Controller
         $this->authorize('view', $ticket);
 
         return $this->successResponse(
-            data : new TicketResource($ticket)
+            data: new TicketResource($ticket)
         );
     }
 
@@ -82,6 +84,14 @@ class TicketController extends Controller
         return $this->_ticketService->transition(
             $ticket,
             $request->validated('status')
+        );
+    }
+
+    public function reassignTicket(UpdateTicketAssigneeRequest $request, int $ticketId)
+    {
+        return $this->_ticketService->reassign(
+            ticket: Ticket::query()->findOrFail($ticketId),
+            assignee: User::query()->findOrFail($request->only('new_assignee_id'))
         );
     }
 }
